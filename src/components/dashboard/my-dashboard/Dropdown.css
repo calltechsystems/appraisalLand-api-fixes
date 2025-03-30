@@ -1,0 +1,43 @@
+/* Dropdown.css */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+  
+  .dropdown-button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-top: none;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease, visibility 0.3s ease;
+    visibility: hidden;
+    z-index: 1;
+  }
+  
+  .open .dropdown-content {
+    width: 200px; /* Adjust the width as needed */
+    visibility: visible;
+  }
+  
+  .open .dropdown-button {
+    background-color: #2980b9;
+  }
+  
+  /* Additional styles can be added for dropdown content */
+  
