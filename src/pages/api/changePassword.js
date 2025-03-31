@@ -21,7 +21,7 @@ export default async function handler(request, response) {
       oldPassword: oldPassword,
       newPassword: newPassword,
     };
-    const userResponse = await axios.post(
+    const changePasswordResponse = await axios.post(
       `${domain}/com.appraisalland.Login/changepassword`,
       formData,
       {
@@ -31,24 +31,16 @@ export default async function handler(request, response) {
         },
       }
     );
-    const user = userResponse.data;
-
-    if (!user) {
-      return response.status(403).json({ error: "No user Exists" });
-    }
-    return response
-      .status(200)
-      .json({ msg: "Successfully Updated The Password !!" });
+    return response.status(200).json({ response: changePasswordResponse.data });
   } catch (err) {
+    console.log({err})
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
       const axiosError = err.response.data;
       const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+      console.error(statusCode, axiosError.message); 
 
       return response.status(statusCode).json({ error: axiosError.message });
     } else {
-      // Handle other types of errors
       return response.status(500).json({ error: "Internal Server Error" });
     }
   }

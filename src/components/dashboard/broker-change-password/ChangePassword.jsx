@@ -103,18 +103,15 @@ const ChangePassword = ({ setIsLoading }) => {
       setIsLoading(true);
       toast.loading("Changing the password");
 
-      const response = await axios.post(
-        "/api/change-broker-password",
-        encryptedData
-      );
+      const res = await axios.post("/api/changePassword", encryptedData);
       toast.dismiss();
-      if (!response) {
-        toast.error("Failed. Please try again.");
-      } else {
-        toast.success("Password updated successfully.");
+      const { success, message } = res.data?.response;
+      if (success) {
+        toast.success(message);
         localStorage.removeItem("user");
-        setIsLoading(false);
         router.push("/login");
+      } else {
+        toast.error(message);
       }
     } catch (err) {
       toast.dismiss();
@@ -126,6 +123,8 @@ const ChangePassword = ({ setIsLoading }) => {
         );
       }
       setIsLoading(false);
+    } finally {
+      toast.dismiss();
     }
   };
 
@@ -172,9 +171,8 @@ const ChangePassword = ({ setIsLoading }) => {
                   onClick={() => togglePasswordVisibility("old")}
                 >
                   <div
-                    className={`input-group-text ${
-                      passwordVisibility.old ? "eye-active" : "eye-inactive"
-                    }`}
+                    className={`input-group-text ${passwordVisibility.old ? "eye-active" : "eye-inactive"
+                      }`}
                     style={{
                       cursor: "pointer",
                       transition: "color 0.3s, transform 0.3s",
@@ -203,9 +201,8 @@ const ChangePassword = ({ setIsLoading }) => {
                     />
                     {passwordStrength && (
                       <small
-                        className={`fw-bold text-${
-                          passwordStrength === "Weak" ? "danger" : "success"
-                        }`}
+                        className={`fw-bold text-${passwordStrength === "Weak" ? "danger" : "success"
+                          }`}
                       >
                         Strength: {passwordStrength}
                       </small>
@@ -277,9 +274,8 @@ const ChangePassword = ({ setIsLoading }) => {
                   onClick={() => togglePasswordVisibility("new")}
                 >
                   <div
-                    className={`input-group-text ${
-                      passwordVisibility.new ? "eye-active" : "eye-inactive"
-                    }`}
+                    className={`input-group-text ${passwordVisibility.new ? "eye-active" : "eye-inactive"
+                      }`}
                     style={{
                       cursor: "pointer",
                       transition: "color 0.3s, transform 0.3s",
@@ -321,9 +317,8 @@ const ChangePassword = ({ setIsLoading }) => {
                   onClick={() => togglePasswordVisibility("confirm")}
                 >
                   <div
-                    className={`input-group-text ${
-                      passwordVisibility.confirm ? "eye-active" : "eye-inactive"
-                    }`}
+                    className={`input-group-text ${passwordVisibility.confirm ? "eye-active" : "eye-inactive"
+                      }`}
                     style={{
                       cursor: "pointer",
                       transition: "color 0.3s, transform 0.3s",

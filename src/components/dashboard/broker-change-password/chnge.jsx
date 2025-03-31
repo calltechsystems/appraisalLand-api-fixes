@@ -78,18 +78,14 @@ const ChangePassword = () => {
       const encryptedData = encryptionData(payload);
       toast.loading("Changing the password");
 
-      const response = await axios.post(
-        "/api/change-broker-password",
-        encryptedData
-      );
-      if (!response) {
-        toast.dismiss();
-        toast.error("Failed. Please try again.");
-      } else {
-        toast.dismiss();
-        toast.success("Password updated successfully.");
+      const res = await axios.post("/api/changePassword", encryptedData);
+      const { success, message } = res.data?.response;
+      if (success) {
+        toast.success(message);
         localStorage.removeItem("user");
         router.push("/login");
+      } else {
+        toast.error(message);
       }
     } catch (err) {
       toast.dismiss();

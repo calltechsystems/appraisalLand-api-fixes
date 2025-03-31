@@ -10,10 +10,8 @@ const ChangePassword = () => {
   const oldPasswordRef = useRef("");
   const newPasswordRef = useRef("");
   const confirmPasswordRef = useRef("");
-  const emailRef = useRef("");
 
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [passwordVisible_01, setPasswordVisible_01] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user")) || {};
 
@@ -23,17 +21,12 @@ const ChangePassword = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const togglePasswordVisibility_01 = () => {
-    setPasswordVisible_01(!passwordVisible_01);
-  };
-
   const submitHandler = async () => {
     const email = userData.userEmail;
     const newPassword = newPasswordRef.current.value;
     const oldPassword = oldPasswordRef.current.value;
     const confirmPassword = confirmPasswordRef.current.value;
 
-    console.log(oldPassword, newPassword, confirmPassword);
     if (String(newPassword) !== String(confirmPassword)) {
       toast.error("Both the passwords should be same ");
     } else {
@@ -48,20 +41,19 @@ const ChangePassword = () => {
         const encryptedData = encryptionData(payload);
 
         toast.loading("Changing the password");
-        const response = await axios.post(
-          "/api/change-broker-password",
-          encryptedData
-        );
-        if (!response) {
-          toast.dismiss();
-          toast.error("Failed Try Again");
-        } else {
-          toast.dismiss();
+        const res = await axios.post("/api/changePassword", encryptedData);
+        const { success, message } = res.data?.response;
+        if (success) {
+          toast.success(message);
           localStorage.removeItem("user");
           router.push("/login");
+        } else {
+          toast.error(message);
         }
       } catch (err) {
         toast.error(err.response.data.error);
+      } finally {
+        toast.dismiss();
       }
     }
   };

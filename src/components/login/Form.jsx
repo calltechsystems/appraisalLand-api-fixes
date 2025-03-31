@@ -8,6 +8,7 @@ import Captcha from "../common/Captcha";
 import { encryptionData } from "../../utils/dataEncryption";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
+import { handleResponseData } from "./function";
 
 const Form = ({
   user,
@@ -15,7 +16,7 @@ const Form = ({
   // setOpenViewModal,
   setModalIsOpenError,
   setErrorMessage,
-  setLoading
+  setLoading,
 }) => {
   const [showhide, setShowhide] = useState("");
   const [change, setChange] = useState(false);
@@ -125,23 +126,13 @@ const Form = ({
         .post("/api/login", encryptedData)
         .then((res) => {
           toast.dismiss();
-          localStorage.setItem("user", JSON.stringify(res.data.userData));
-          if (res.data.userData.userType === 7) {
-            router.push("/appraiser-company-dashboard-admin");
-          } else if (
-            res.data.userData.userType === 1 ||
-            res.data.userData.userType === 6
-          ) {
-            router.push("/my-dashboard");
-          } else if (res.data.userData.userType === 4) {
-            router.push("/appraiser-company-dashboard");
-          } else if (
-            res.data.userData.userType === 3 ||
-            res.data.userData.userType === 5
-          ) {
-            router.push("/appraiser-dashboard");
-          } else if (res.data.userData.userType === 2) {
-            router.push("/brokerage-dashboard");
+          const { success, data, message } = res.data?.response;
+          if (success) {
+            toast.success(message);
+            const redirectionUrl = handleResponseData(data);
+            router.push(redirectionUrl);
+          } else {
+            toast.error(message);
           }
         })
         .catch((err) => {
@@ -153,7 +144,6 @@ const Form = ({
             );
             setModalIsOpenError(true);
           } else {
-            // console.log(err);
             toast.dismiss();
             setErrorMessage(err.response.data.error);
             console.log("err", err.response.data.error);
@@ -475,7 +465,6 @@ const Form = ({
                           <input
                             type="text"
                             ref={emailLoginRef}
-                            
                             className="form-control"
                             id="formGroupExampleInput3"
                           />

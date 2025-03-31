@@ -8,6 +8,7 @@ import Captcha from "../common/Captcha";
 import { encryptionData } from "../../utils/dataEncryption";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
+import { handleResponseData } from "./function";
 
 const Form = ({ user }) => {
   const [showhide, setShowhide] = useState("");
@@ -59,11 +60,13 @@ const Form = ({ user }) => {
         .post("/api/login", encryptedData)
         .then((res) => {
           toast.dismiss();
-          localStorage.setItem("user", JSON.stringify(res.data.userData));
-          if (res.data.userData.userType === 1) {
-            router.push("/my-dashboard");
-          } else if (res.data.userData.userType === 2) {
-            router.push("/appraiser-dashboard");
+          const { success, data, message } = res.data?.response;
+          if (success) {
+            toast.success(message);
+            const redirectionUrl = handleResponseData(data);
+            router.push(redirectionUrl);
+          } else {
+            toast.error(message);
           }
         })
         .catch((err) => {
