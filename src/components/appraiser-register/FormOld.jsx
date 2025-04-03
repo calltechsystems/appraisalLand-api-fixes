@@ -121,7 +121,7 @@ const Form = ({
       const data = {
         email: email,
         password: password,
-        companyId: userData.appraiserCompany_Datails.appraiserCompanyId,
+        companyId: userData.appraiserCompanyDetail.appraiserCompanyId,
       };
 
       const encryptedData = encryptionData(data);

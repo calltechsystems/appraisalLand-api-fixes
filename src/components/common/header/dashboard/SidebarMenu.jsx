@@ -20,7 +20,7 @@ const SidebarMenu = () => {
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     setUserData(userData);
-    if (userData?.broker_Details?.brokerageid !== null) {
+    if (userData?.brokerDetail?.brokerageid !== null) {
       setIsBrokerByBrokerage(true);
     }
 

@@ -265,7 +265,7 @@ const Index = ({ propertyId }) => {
     const data = JSON.parse(localStorage.getItem("user"));
     if (!data) {
       router.push("/login");
-    } else if (!data?.broker_Details?.firstName) {
+    } else if (!data?.brokerDetail?.firstName) {
       router.push("/my-profile");
     }
     if (!data) {

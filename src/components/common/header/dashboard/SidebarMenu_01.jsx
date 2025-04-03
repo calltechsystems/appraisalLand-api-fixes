@@ -15,7 +15,7 @@ const SidebarMenu = () => {
 
   useEffect(() => {
     userData = JSON.parse(localStorage.getItem("user"));
-    if (userData?.appraiser_Details?.companyId) {
+    if (userData?.appraiserDetail?.companyId) {
       setIsAppraiserByCompany(true);
     }
 

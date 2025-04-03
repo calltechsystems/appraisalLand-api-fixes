@@ -519,8 +519,8 @@ const HeaderMenuContent = ({ float = "", hide, userData }) => {
               alt="e1.png"
             />
             <span className="dn-1199 ms-1 text-light">
-              {userData?.brokerage_Details?.firstName
-                ? `${userData.brokerage_Details?.firstName} ${userData?.brokerage_Details?.lastName}`
+              {userData?.brokerageDetail?.firstName
+                ? `${userData.brokerageDetail?.firstName} ${userData?.brokerageDetail?.lastName}`
                 : "Admin"}
             </span>
           </a>

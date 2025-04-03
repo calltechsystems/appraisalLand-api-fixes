@@ -44,7 +44,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
           <div className="wrap-custom-file mt-3 mb-5">
             <img
               style={{ borderRadius: "50%" }}
-              src={userData?.broker_Details?.profileImage}
+              src={userData?.brokerDetail?.profileImage}
               alt="Uploaded Image"
             />
           </div>
@@ -91,9 +91,9 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.firstName}{" "}
-                        {userData?.broker_Details?.middleName}{" "}
-                        {userData?.broker_Details?.lastName}
+                        {userData?.brokerDetail?.firstName}{" "}
+                        {userData?.brokerDetail?.middleName}{" "}
+                        {userData?.brokerDetail?.lastName}
                       </td>
                     </tr>
                     <tr>
@@ -101,7 +101,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         <span className="text-start"> Company Name </span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.companyName}
+                        {userData?.brokerDetail?.companyName}
                       </td>
                     </tr>
                     <tr>
@@ -109,7 +109,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         <span className="text-start"> Email Address</span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.emailId}
+                        {userData?.brokerDetail?.emailId}
                       </td>
                     </tr>
                     <tr>
@@ -118,7 +118,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {formatPhoneNumber(
-                          userData?.broker_Details?.phoneNumber
+                          userData?.brokerDetail?.phoneNumber
                         )}
                       </td>
                     </tr>
@@ -127,9 +127,9 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         <span className="text-start"> Cell Number</span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.cellnumber
+                        {userData?.brokerDetail?.cellnumber
                           ? formatPhoneNumber(
-                              userData?.broker_Details?.cellnumber
+                              userData?.brokerDetail?.cellnumber
                             )
                           : "N.A."}
                       </td>
@@ -142,7 +142,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.mortageBrokerLicNo}
+                        {userData?.brokerDetail?.mortageBrokerLicNo}
                       </td>
                     </tr>
                     <tr>
@@ -152,7 +152,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.mortageBrokerageLicNo}
+                        {userData?.brokerDetail?.mortageBrokerageLicNo}
                       </td>
                     </tr>
                     <tr>
@@ -161,12 +161,12 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.streetNumber}{" "}
-                        {userData?.broker_Details?.streetName}{" "}
-                        {userData?.broker_Details?.apartmentNo}{" "}
-                        {userData?.broker_Details?.city}{" "}
-                        {userData?.broker_Details?.province}{" "}
-                        {userData?.broker_Details?.postalCode}
+                        {userData?.brokerDetail?.streetNumber}{" "}
+                        {userData?.brokerDetail?.streetName}{" "}
+                        {userData?.brokerDetail?.apartmentNo}{" "}
+                        {userData?.brokerDetail?.city}{" "}
+                        {userData?.brokerDetail?.province}{" "}
+                        {userData?.brokerDetail?.postalCode}
                       </td>
                     </tr>
                     <tr>
@@ -174,12 +174,12 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         <span className="text-start">Assistant#1 Name</span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.assistantFirstName ||
-                        userData?.broker_Details?.assistantLastName
+                        {userData?.brokerDetail?.assistantFirstName ||
+                        userData?.brokerDetail?.assistantLastName
                           ? `${
-                              userData?.broker_Details?.assistantFirstName || ""
+                              userData?.brokerDetail?.assistantFirstName || ""
                             } ${
-                              userData?.broker_Details?.assistantLastName || ""
+                              userData?.brokerDetail?.assistantLastName || ""
                             }`.trim()
                           : "N.A."}
                       </td>
@@ -190,8 +190,8 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.assistantEmailAddress
-                          ? userData?.broker_Details?.assistantTwoEmailAddress
+                        {userData?.brokerDetail?.assistantEmailAddress
+                          ? userData?.brokerDetail?.assistantTwoEmailAddress
                           : "N.A."}
                       </td>
                     </tr>
@@ -201,9 +201,9 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.assistantPhoneNumber
+                        {userData?.brokerDetail?.assistantPhoneNumber
                           ? formatPhoneNumber(
-                              userData?.broker_Details?.assistantPhoneNumber
+                              userData?.brokerDetail?.assistantPhoneNumber
                             )
                           : "N.A."}
                       </td>
@@ -213,13 +213,13 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         <span className="text-start">Assistant#2 Name</span>
                       </td>
                       <td className="table-value">
-                        {userData?.broker_Details?.assistantTwoFirstName ||
-                        userData?.broker_Details?.assistantTwoLastName
+                        {userData?.brokerDetail?.assistantTwoFirstName ||
+                        userData?.brokerDetail?.assistantTwoLastName
                           ? `${
-                              userData?.broker_Details?.assistantTwoFirstName ||
+                              userData?.brokerDetail?.assistantTwoFirstName ||
                               ""
                             } ${
-                              userData?.broker_Details?.assistantTwoLastName ||
+                              userData?.brokerDetail?.assistantTwoLastName ||
                               ""
                             }`.trim()
                           : "N.A."}
@@ -231,8 +231,8 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.assistantTwoEmailAddress
-                          ? userData?.broker_Details?.assistantTwoEmailAddress
+                        {userData?.brokerDetail?.assistantTwoEmailAddress
+                          ? userData?.brokerDetail?.assistantTwoEmailAddress
                           : "N.A."}
                       </td>
                     </tr>
@@ -242,9 +242,9 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                       </td>
                       <td className="table-value">
                         {" "}
-                        {userData?.broker_Details?.assistantTwoPhoneNumber
+                        {userData?.brokerDetail?.assistantTwoPhoneNumber
                           ? formatPhoneNumber(
-                              userData?.broker_Details?.assistantTwoPhoneNumber
+                              userData?.brokerDetail?.assistantTwoPhoneNumber
                             )
                           : "N.A."}
                       </td>

@@ -95,7 +95,7 @@ function SmartTable(props) {
     ];
 
     getTheDownloadView(
-      "appraiserCompany_Datails",
+      "appraiserCompanyDetail",
       props.data,
       "Sub Appraisers",
       headers

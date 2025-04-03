@@ -15,7 +15,7 @@ const Index = () => {
 
   // if (!userData) {
   //   router.push("/login");
-  // } else if (!userData?.broker_Details?.firstName) {
+  // } else if (!userData?.brokerDetail?.firstName) {
   //   router.push("/my-profile");
   // }
 

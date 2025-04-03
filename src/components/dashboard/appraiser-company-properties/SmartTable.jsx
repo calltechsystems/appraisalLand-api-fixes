@@ -90,7 +90,7 @@ function SmartTable(props) {
     ]
     
     getTheDownloadView(
-      "appraiserCompany_Datails",
+      "appraiserCompanyDetail",
       props.allProperties,
       "Appraiser Company Properties",
       headers

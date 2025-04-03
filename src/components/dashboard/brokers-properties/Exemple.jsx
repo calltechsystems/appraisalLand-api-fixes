@@ -700,7 +700,7 @@ export default function Exemple({
           "Content-Type": "application/json",
         },
         params: {
-          userId: data?.brokerage_Details?.id,
+          userId: data?.brokerageDetail?.id,
         },
       })
       .then((res) => {

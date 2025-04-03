@@ -73,11 +73,16 @@ const LoginSignup = () => {
     setLoading(true);
     axios.post("/api/login",encryptedData)
     .then(res=>{
-      console.log(res);
-      alert("Successfully Logged In!");
+    toast.dismiss();
+    const { success, message } = res.data?.response;
+    if (success) {
+      toast.success(message);
       localStorage.setItem("user",JSON.stringify(res));
       router.push("/my-profile");
-    })
+    } else {
+      toast.error(message);
+    }
+  })
     .catch(err=>{
       alert(err.message);
     })

@@ -149,7 +149,7 @@ const Index = () => {
     setUserData(data);
     if (!data) {
       router.push("/login");
-    } else if (!data?.appraiserCompany_Datails?.firstName) {
+    } else if (!data?.appraiserCompanyDetail?.firstName) {
       router.push("/appraiser-company-profile");
     }
     if (!data) {
@@ -599,8 +599,8 @@ const Index = () => {
                       }}
                     >
                       <span style={{ color: "#2e008b" }}>Welcome</span>{" "}
-                      {userData?.appraiserCompany_Datails
-                        ? `${userData?.appraiserCompany_Datails?.firstName} ${userData?.appraiserCompany_Datails?.lastName}`
+                      {userData?.appraiserCompanyDetail
+                        ? `${userData?.appraiserCompanyDetail?.firstName} ${userData?.appraiserCompanyDetail?.lastName}`
                         : "Name"}
                     </h2>
                   </div>

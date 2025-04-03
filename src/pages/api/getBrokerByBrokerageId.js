@@ -9,7 +9,6 @@ async function handler(request, response) {
     const token = request.headers.authorization;
     const userId = request.query.userId;
 
-    console.log(userId);
     const userResponse = await axios.get(
       `${domain}/com.appraisalland.Brokerage`,
       {

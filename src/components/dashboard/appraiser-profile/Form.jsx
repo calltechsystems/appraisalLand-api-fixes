@@ -39,7 +39,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
           <div className="wrap-custom-file mt-5 mb-5">
             <img
               style={{ borderRadius: "50%" }}
-              src={userData?.appraiser_Details?.profileImage}
+              src={userData?.appraiserDetail?.profileImage}
               alt="Uploaded Image"
             />
           </div>
@@ -88,9 +88,9 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </td>
                         <td className="table-value">
                           {" "}
-                          {userData?.appraiser_Details?.firstName}{" "}
-                          {userData?.appraiser_Details?.middleName}{" "}
-                          {userData?.appraiser_Details?.lastName}
+                          {userData?.appraiserDetail?.firstName}{" "}
+                          {userData?.appraiserDetail?.middleName}{" "}
+                          {userData?.appraiserDetail?.lastName}
                         </td>
                       </tr>
                       <tr>
@@ -98,8 +98,8 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                           <span className="text-start"> Company Name </span>
                         </td>
                         <td className="table-value">
-                          {userData?.appraiser_Details?.companyName
-                            ? userData?.appraiser_Details?.companyName
+                          {userData?.appraiserDetail?.companyName
+                            ? userData?.appraiserDetail?.companyName
                             : "N.A."}
                         </td>
                       </tr>
@@ -108,7 +108,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                           <span className="text-start"> Email Address</span>
                         </td>
                         <td className="table-value">
-                          {userData?.appraiser_Details?.emailId}
+                          {userData?.appraiserDetail?.emailId}
                         </td>
                       </tr>
                       <tr>
@@ -117,7 +117,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </td>
                         <td className="table-value">
                           {formatPhoneNumber(
-                            userData?.appraiser_Details?.phoneNumber
+                            userData?.appraiserDetail?.phoneNumber
                           )}
                         </td>
                       </tr>
@@ -127,13 +127,13 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </td>
                         <td className="table-value">
                           <span className="text-start text-dark fw-bold">
-                            {userData?.appraiser_Details?.cellNumber
+                            {userData?.appraiserDetail?.cellNumber
                               ? formatPhoneNumber(
-                                  userData?.appraiser_Details?.cellNumber
+                                  userData?.appraiserDetail?.cellNumber
                                 )
                               : "N.A."}
-                            {/* {userData?.appraiser_Details?.cellNumber
-                              ? userData?.appraiser_Details?.cellNumber
+                            {/* {userData?.appraiserDetail?.cellNumber
+                              ? userData?.appraiserDetail?.cellNumber
                               : "N.A."} */}
                           </span>
                         </td>
@@ -144,12 +144,12 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </td>
                         <td className="table-value">
                           {" "}
-                          {userData?.appraiser_Details?.streetNumber}{" "}
-                          {userData?.appraiser_Details?.streetName}{" "}
-                          {userData?.appraiser_Details?.apartmentNo}{" "}
-                          {userData?.appraiser_Details?.city},{" "}
-                          {userData?.appraiser_Details?.province},{" "}
-                          {userData?.appraiser_Details?.postalCode}
+                          {userData?.appraiserDetail?.streetNumber}{" "}
+                          {userData?.appraiserDetail?.streetName}{" "}
+                          {userData?.appraiserDetail?.apartmentNo}{" "}
+                          {userData?.appraiserDetail?.city},{" "}
+                          {userData?.appraiserDetail?.province},{" "}
+                          {userData?.appraiserDetail?.postalCode}
                         </td>
                       </tr>
                       <tr>
@@ -158,7 +158,7 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                         </td>
                         <td className="table-value">
                           <span className="text-start text-dark fw-bold">
-                            {userData?.appraiser_Details?.designation}
+                            {userData?.appraiserDetail?.designation}
                           </span>
                         </td>
                       </tr>
@@ -174,16 +174,16 @@ const Form = ({ userData, chnageShowCardHandler }) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href={
-                                  userData?.appraiser_Details?.lenderListUrl !==
+                                  userData?.appraiserDetail?.lenderListUrl !==
                                   ""
-                                    ? userData?.appraiser_Details?.lenderListUrl
+                                    ? userData?.appraiserDetail?.lenderListUrl
                                     : ""
                                 }
                                 onClick={(event) =>
                                   handleDownloadClick(
                                     event,
-                                    userData?.appraiser_Details?.lenderListUrl,
-                                    `${userData?.appraiser_Details?.firstName}_lenderlist.pdf`
+                                    userData?.appraiserDetail?.lenderListUrl,
+                                    `${userData?.appraiserDetail?.firstName}_lenderlist.pdf`
                                   )
                                 }
                                 style={{

@@ -63,7 +63,7 @@ function SmartTable(props) {
     ];
 
     getTheDownloadView(
-      "brokerage_Details",
+      "brokerageDetail",
       props.allProperties,
       "Brokerage Transaction History",
       headers

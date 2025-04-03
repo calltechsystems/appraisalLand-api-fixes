@@ -29,9 +29,9 @@ const ProfileInfo = ({
 
   useEffect(() => {
     let updatedList = { ...uploadingFiles };
-    if (userData?.appraiserCompany_Datails?.profileImage) {
+    if (userData?.appraiserCompanyDetail?.profileImage) {
       const name =
-        userData?.appraiserCompany_Datails?.profileImage
+        userData?.appraiserCompanyDetail?.profileImage
           .split("/")
           .pop()
           .split("?")[0] || "";
@@ -40,8 +40,8 @@ const ProfileInfo = ({
         previewUrl:
           name == ""
             ? "/assets/images/home/placeholder_01.jpg"
-            : userData?.appraiserCompany_Datails?.profileImage,
-        uploadedUrl: userData?.appraiserCompany_Datails?.profileImage || "",
+            : userData?.appraiserCompanyDetail?.profileImage,
+        uploadedUrl: userData?.appraiserCompanyDetail?.profileImage || "",
         fieldType: "profileImage",
       };
 
@@ -50,8 +50,8 @@ const ProfileInfo = ({
         ["profileImage"]: updatedDoc,
       };
     }
-    if (userData?.appraiserCompany_Datails?.lenderListUrl) {
-      const name = userData?.appraiserCompany_Datails?.lenderListUrl
+    if (userData?.appraiserCompanyDetail?.lenderListUrl) {
+      const name = userData?.appraiserCompanyDetail?.lenderListUrl
         .split("/")
         .pop()
         .split("?")[0];
@@ -61,8 +61,8 @@ const ProfileInfo = ({
           ? "/assets/Attachments/zipIcon.png"
           : name.includes("pdf")
           ? "/assets/Attachments/pdfIcon.png"
-          : userData?.appraiserCompany_Datails?.lenderListUrl,
-        uploadedUrl: userData?.appraiserCompany_Datails?.lenderListUrl,
+          : userData?.appraiserCompanyDetail?.lenderListUrl,
+        uploadedUrl: userData?.appraiserCompanyDetail?.lenderListUrl,
         fieldType: "LenderList",
       };
       updatedList = {
@@ -75,17 +75,17 @@ const ProfileInfo = ({
 
   const [selectedImage2, setSelectedImage2] = useState({
     name:
-      userData?.appraiserCompany_Datails?.lenderListUrl !== null
+      userData?.appraiserCompanyDetail?.lenderListUrl !== null
         ? "uploaded_lenderlist"
         : "",
     url:
-      userData?.appraiserCompany_Datails?.lenderListUrl !== null
-        ? userData?.appraiserCompany_Datails?.lenderListUrl
+      userData?.appraiserCompanyDetail?.lenderListUrl !== null
+        ? userData?.appraiserCompanyDetail?.lenderListUrl
         : "",
   });
 
   const [SelectedImage, setSelectedImage] = useState(
-    userData?.appraiserCompany_Datails?.profileImage ||
+    userData?.appraiserCompanyDetail?.profileImage ||
       "/assets/images/home/placeholder_01.jpg"
   );
 
@@ -94,7 +94,7 @@ const ProfileInfo = ({
   const [edit, setEdit] = useState(true);
 
   const [firstNameRef, setFirstNameRef] = useState(
-    userData?.appraiserCompany_Datails?.firstName || ""
+    userData?.appraiserCompanyDetail?.firstName || ""
   );
 
   const [emailNotification, setEmailNotification] = useState(
@@ -108,68 +108,68 @@ const ProfileInfo = ({
   const [SMSAlert, setSMSAlert] = useState(false);
 
   const [licenseNumber, setLicenseNumber] = useState(
-    userData?.appraiserCompany_Datails?.licenseNumber || ""
+    userData?.appraiserCompanyDetail?.licenseNumber || ""
   );
 
   const [emailId, setEmailId] = useState(
-    userData?.appraiserCompany_Datails?.emailId || ""
+    userData?.appraiserCompanyDetail?.emailId || ""
   );
 
   const [cellNumber, setCellNumber] = useState(
-    userData?.appraiserCompany_Datails?.cellNumber || ""
+    userData?.appraiserCompanyDetail?.cellNumber || ""
   );
 
   const [lastNameRef, setLastNameRef] = useState(
-    userData?.appraiserCompany_Datails?.lastName || ""
+    userData?.appraiserCompanyDetail?.lastName || ""
   );
   const [companyNameRef, setCompanyNameRef] = useState(
-    userData?.appraiserCompany_Datails?.appraiserCompanyName || ""
+    userData?.appraiserCompanyDetail?.appraiserCompanyName || ""
   );
 
   const [addressLineRef, setAddressLineRef] = useState(
-    userData?.appraiserCompany_Datails?.addressLineOne || ""
+    userData?.appraiserCompanyDetail?.addressLineOne || ""
   );
   const [addressLineTwoRef, setAddressLineTwoRef] = useState(
-    userData?.appraiserCompany_Datails?.addressLineTwo || ""
+    userData?.appraiserCompanyDetail?.addressLineTwo || ""
   );
 
   const [cityRef, setCityRef] = useState(
-    userData?.appraiserCompany_Datails?.city || ""
+    userData?.appraiserCompanyDetail?.city || ""
   );
   const [stateRef, setStateRef] = useState(
-    userData?.appraiserCompany_Datails?.state || ""
+    userData?.appraiserCompanyDetail?.state || ""
   );
   const [zipcodeRef, setZipcodeRef] = useState(
-    userData?.appraiserCompany_Datails?.postalCode || ""
+    userData?.appraiserCompanyDetail?.postalCode || ""
   );
   const [phoneNumberRef, setPhoneNumberRef] = useState(
-    userData?.appraiserCompany_Datails?.phoneNumber || ""
+    userData?.appraiserCompanyDetail?.phoneNumber || ""
   );
 
   const [officeContactFirstName, setOfficeContactFirstName] = useState(
-    userData.appraiserCompany_Datails?.officeContactFirstName || ""
+    userData.appraiserCompanyDetail?.officeContactFirstName || ""
   );
 
   const [officeContactLastName, setOfficeContactLastName] = useState(
-    userData?.appraiserCompany_Datails?.officeContactLastName || ""
+    userData?.appraiserCompanyDetail?.officeContactLastName || ""
   );
 
   const [officeContactEmail, setOfficeContactEmail] = useState(
-    userData?.appraiserCompany_Datails?.officeContactEmail || ""
+    userData?.appraiserCompanyDetail?.officeContactEmail || ""
   );
 
   const [officeContactPhone, setOfficeContactPhone] = useState(
-    userData?.appraiserCompany_Datails?.officeContactPhone || ""
+    userData?.appraiserCompanyDetail?.officeContactPhone || ""
   );
 
   const [streetName, setStreetName] = useState(
-    userData?.appraiserCompany_Datails?.streetName || ""
+    userData?.appraiserCompanyDetail?.streetName || ""
   );
   const [streetNumber, setStreetNumber] = useState(
-    userData.appraiserCompany_Datails?.streetNumber || ""
+    userData.appraiserCompanyDetail?.streetNumber || ""
   );
   const [apartmentNumber, setApartmentNumber] = useState(
-    userData?.appraiserCompany_Datails?.apartmentNumber || ""
+    userData?.appraiserCompanyDetail?.apartmentNumber || ""
   );
   const [disable, setdisable] = useState(false);
   useEffect(() => {
@@ -401,39 +401,39 @@ const ProfileInfo = ({
     const firstName =
       firstNameRef !== ""
         ? firstNameRef
-        : userData.appraiserCompany_Datails.firstName;
+        : userData.appraiserCompanyDetail.firstName;
     const lastName =
       lastNameRef !== ""
         ? lastNameRef
-        : userData.appraiserCompany_Datails.lastName;
+        : userData.appraiserCompanyDetail.lastName;
     const city =
-      cityRef !== "" ? cityRef : userData.appraiserCompany_Datails.city;
+      cityRef !== "" ? cityRef : userData.appraiserCompanyDetail.city;
     const state = stateRef;
     const zipCode =
       zipcodeRef !== ""
         ? zipcodeRef
-        : userData.appraiserCompany_Datails.zipCode;
+        : userData.appraiserCompanyDetail.zipCode;
     const phoneNumber =
       phoneNumberRef !== ""
         ? phoneNumberRef
-        : userData.appraiserCompany_Datails.phoneNumber;
+        : userData.appraiserCompanyDetail.phoneNumber;
     // const cellNumber =
-    //   cellNumber!== "" ? cellNumber : userData.appraiserCompany_Datails.cellNumber;
+    //   cellNumber!== "" ? cellNumber : userData.appraiserCompanyDetail.cellNumber;
     const adressLine2 = addressLineTwoRef;
     const companyName =
       companyNameRef !== ""
         ? companyNameRef
-        : userData.appraiserCompany_Datails.companyName;
+        : userData.appraiserCompanyDetail.companyName;
     // const licenseNumber =
     //   licenseNumberRef !== ""
     //     ? licenseNumberRef
-    //     : userData.appraiserCompany_Datails.licenseNumber;
+    //     : userData.appraiserCompanyDetail.licenseNumber;
     const emailIdRef =
-      emailId !== "" ? emailId : userData.appraiserCompany_Datails.emailId;
+      emailId !== "" ? emailId : userData.appraiserCompanyDetail.emailId;
     const streetNameRef =
       streetName !== ""
         ? streetName
-        : userData.appraiserCompany_Datails.streetName;
+        : userData.appraiserCompanyDetail.streetName;
 
     const payload = {
       id: userData.userId,
@@ -675,7 +675,7 @@ const ProfileInfo = ({
             let data = userData;
             data.smsNotification = res.data.userData.isSms;
             data.emailNotification = res.data.userData.isEmail;
-            data.appraiserCompany_Datails = res.data.userData.appraiserCompany;
+            data.appraiserCompanyDetail = res.data.userData.appraiserCompany;
             localStorage.removeItem("user");
             localStorage.setItem("user", JSON.stringify(data));
             setShowCard(true);
@@ -1983,7 +1983,7 @@ const ProfileInfo = ({
                             className="btn btn2 btn-dark"
                             onClick={initiateTheSubmit}
                           >
-                            {userData?.appraiserCompany_Datails
+                            {userData?.appraiserCompanyDetail
                               ? "Update Profile"
                               : "Create Profile"}
                           </button>

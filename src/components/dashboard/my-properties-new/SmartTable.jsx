@@ -103,7 +103,7 @@ function SmartTable(props) {
     const allData = props.properties;
 
     getTheDownloadView(
-      "broker_Details",
+      "brokerDetail",
       allData,
       "Mortgage Broker Properties",
       staticHeaders

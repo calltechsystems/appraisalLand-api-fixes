@@ -95,7 +95,7 @@ function SmartTable(props) {
     ];
 
     getTheDownloadView(
-      "brokerage_Details",
+      "brokerageDetail",
       props.data,
       "Sub Brokers",
       headers

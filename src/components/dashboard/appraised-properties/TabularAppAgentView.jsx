@@ -958,7 +958,7 @@ export default function Exemple({
                 "Content-Type": "application/json",
               },
               params: {
-                userId: data.appraiser_Details?.id,
+                userId: data.appraiserDetail?.id,
               },
             })
             .then((res) => {

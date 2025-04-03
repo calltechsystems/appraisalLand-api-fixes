@@ -21,58 +21,58 @@ const MyAccount = ({ user, profileCount, setProfile, userData }) => {
   useEffect(() => {
     let count = 0;
     if (userData.userType === 1) {
-      if (userData.broker_Details.firstName) {
+      if (userData.brokerDetail.firstName) {
         count = count + 1;
       }
-      if (userData.broker_Details.middleName) {
+      if (userData.brokerDetail.middleName) {
         count = count + 1;
       }
-      if (userData.broker_Details.lastName) {
+      if (userData.brokerDetail.lastName) {
         count = count + 1;
       }
-      if (userData.broker_Details.licenseNo != null) {
+      if (userData.brokerDetail.licenseNo != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.adressLine1 != null) {
+      if (userData.brokerDetail.adressLine1 != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.adressLine2 != null) {
+      if (userData.brokerDetail.adressLine2 != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.area != null) {
+      if (userData.brokerDetail.area != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.assistantFirstName != null) {
+      if (userData.brokerDetail.assistantFirstName != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.assistantPhoneNumber != null) {
+      if (userData.brokerDetail.assistantPhoneNumber != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.brokerageName != null) {
+      if (userData.brokerDetail.brokerageName != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.city != null) {
+      if (userData.brokerDetail.city != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.companyName != null) {
+      if (userData.brokerDetail.companyName != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.mortageBrokerLicNo != null) {
+      if (userData.brokerDetail.mortageBrokerLicNo != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.mortageBrokerageLicNo != null) {
+      if (userData.brokerDetail.mortageBrokerageLicNo != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.phoneNumber != null) {
+      if (userData.brokerDetail.phoneNumber != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.profileImage != null) {
+      if (userData.brokerDetail.profileImage != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.state != null) {
+      if (userData.brokerDetail.state != null) {
         count = count + 1;
       }
-      if (userData.broker_Details.zipCode != null) {
+      if (userData.brokerDetail.zipCode != null) {
         count = count + 1;
       }
 
@@ -80,58 +80,58 @@ const MyAccount = ({ user, profileCount, setProfile, userData }) => {
       console.log(change);
       setProfileValue(change);
     } else if (userData.userType === 2) {
-      if (userData.brokerage_Details.firstName) {
+      if (userData.brokerageDetail.firstName) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.middleName) {
+      if (userData.brokerageDetail.middleName) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.lastName) {
+      if (userData.brokerageDetail.lastName) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.licenseNo != null) {
+      if (userData.brokerageDetail.licenseNo != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.adressLine1 != null) {
+      if (userData.brokerageDetail.adressLine1 != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.adressLine2 != null) {
+      if (userData.brokerageDetail.adressLine2 != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.area != null) {
+      if (userData.brokerageDetail.area != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.assistantFirstName != null) {
+      if (userData.brokerageDetail.assistantFirstName != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.assistantPhoneNumber != null) {
+      if (userData.brokerageDetail.assistantPhoneNumber != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.brokerageName != null) {
+      if (userData.brokerageDetail.brokerageName != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.city != null) {
+      if (userData.brokerageDetail.city != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.companyName != null) {
+      if (userData.brokerageDetail.companyName != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.mortageBrokerLicNo != null) {
+      if (userData.brokerageDetail.mortageBrokerLicNo != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.mortageBrokerageLicNo != null) {
+      if (userData.brokerageDetail.mortageBrokerageLicNo != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.phoneNumber != null) {
+      if (userData.brokerageDetail.phoneNumber != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.profileImage != null) {
+      if (userData.brokerageDetail.profileImage != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.state != null) {
+      if (userData.brokerageDetail.state != null) {
         count = count + 1;
       }
-      if (userData.brokerage_Details.zipCode != null) {
+      if (userData.brokerageDetail.zipCode != null) {
         count = count + 1;
       }
 
@@ -149,15 +149,15 @@ const MyAccount = ({ user, profileCount, setProfile, userData }) => {
           height={40}
           className="float-start"
           src={
-            userData?.broker_Details?.profileImage
-              ? userData.broker_Details?.profileImage
+            userData?.brokerDetail?.profileImage
+              ? userData.brokerDetail?.profileImage
               : `/assets/images/home/placeholder_01.jpg`
           }
           alt="e1.png"
         />
         <p>
-          {userData?.broker_Details?.firstName
-            ? `${userData.broker_Details?.firstName} ${userData?.broker_Details?.lastName}`
+          {userData?.brokerDetail?.firstName
+            ? `${userData.brokerDetail?.firstName} ${userData?.brokerDetail?.lastName}`
             : "Name"}
           <br />
           <span className="address">

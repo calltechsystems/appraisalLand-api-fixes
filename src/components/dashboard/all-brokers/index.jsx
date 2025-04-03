@@ -76,7 +76,7 @@ const Index = () => {
     setDisable(true);
 
     const payload = {
-      brokerageId: userData?.brokerage_Details?.id,
+      brokerageId: userData?.brokerageDetail?.id,
       brokerId: selectedBroker.id,
       IsActive: !selectedBroker.isActive,
     };
@@ -125,7 +125,7 @@ const Index = () => {
   //   const userData = JSON.parse(localStorage.getItem("user"));
   //   setDisable(true);
   //   const payload = {
-  //     brokerageId: userData?.brokerage_Details?.id,
+  //     brokerageId: userData?.brokerageDetail?.id,
   //     brokerId: selectedBroker.id,
   //     IsActive: !selectedBroker.isActive,
   //   };
@@ -341,7 +341,7 @@ const Index = () => {
     if (!data) {
       router.push("/login");
     }
-    // else if (!data?.brokerage_Details.firstName) {
+    // else if (!data?.brokerageDetail.firstName) {
     //   router.push("/appraiser-profile");
     // }
     if (!data) {

@@ -526,15 +526,15 @@ const HeaderMenuContent = ({
               height={45}
               className="rounded-circle"
               src={
-                userInfo?.broker_Details?.profileImage
-                  ? userInfo?.broker_Details?.profileImage
+                userInfo?.brokerDetail?.profileImage
+                  ? userInfo?.brokerDetail?.profileImage
                   : `/assets/images/home/placeholder_01.jpg`
               }
               alt="e1.png"
             />
             <span className="dn-1199 ms-1 text-light">
-              {userInfo?.broker_Details?.firstName
-                ? `${userInfo.broker_Details?.firstName} ${userInfo?.broker_Details?.lastName}`
+              {userInfo?.brokerDetail?.firstName
+                ? `${userInfo.brokerDetail?.firstName} ${userInfo?.brokerDetail?.lastName}`
                 : ""}
             </span><br />
             {/* <h5></h5> */}

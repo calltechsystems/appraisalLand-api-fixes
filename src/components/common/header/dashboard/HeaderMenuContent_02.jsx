@@ -532,15 +532,15 @@ const HeaderMenuContent = ({
                 height={45}
                 className="rounded-circle"
                 src={
-                  userData?.appraiser_Details?.profileImage
-                    ? userData?.appraiser_Details?.profileImage
+                  userData?.appraiserDetail?.profileImage
+                    ? userData?.appraiserDetail?.profileImage
                     : `/assets/images/home/placeholder_01.jpg`
                 }
                 alt="e1.png"
               />
               <span className="dn-1199 ms-1 text-light">
-                {userData?.appraiser_Details?.firstName
-                  ? `${userData.appraiser_Details?.firstName} ${userData?.appraiser_Details?.lastName}`
+                {userData?.appraiserDetail?.firstName
+                  ? `${userData.appraiserDetail?.firstName} ${userData?.appraiserDetail?.lastName}`
                   : ""} <br />
                   {/* <span style={{marginLeft:"40px", marginTop:"-20px"}}>Appraiser</span> */}
               </span>
@@ -561,15 +561,15 @@ const HeaderMenuContent = ({
                 height={45}
                 className="rounded-circle"
                 src={
-                  userData?.appraiserCompany_Datails?.profileImage
-                    ? userData?.appraiserCompany_Datails?.profileImage
+                  userData?.appraiserCompanyDetail?.profileImage
+                    ? userData?.appraiserCompanyDetail?.profileImage
                     : `/assets/images/home/placeholder_01.jpg`
                 }
                 alt="e1.png"
               />
               <span className="dn-1199 ms-1 text-light">
-                {userData?.appraiserCompany_Datails?.firstName
-                  ? `${userData.appraiserCompany_Datails?.firstName} ${userData?.appraiserCompany_Datails?.lastName}`
+                {userData?.appraiserCompanyDetail?.firstName
+                  ? `${userData.appraiserCompanyDetail?.firstName} ${userData?.appraiserCompanyDetail?.lastName}`
                   : ""}
               </span>
             </a>

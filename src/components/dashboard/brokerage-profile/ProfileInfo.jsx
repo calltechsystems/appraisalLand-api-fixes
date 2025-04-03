@@ -22,7 +22,7 @@ const ProfileInfo = ({
   const router = useRouter();
 
   const [SelectedImage, setSelectedImage] = useState(
-    userData?.brokerage_Details?.profileImage ||
+    userData?.brokerageDetail?.profileImage ||
       "/assets/images/home/placeholder_01.jpg"
   );
 
@@ -36,100 +36,100 @@ const ProfileInfo = ({
 
   const hiddenStyle = { backgroundColor: "#E8F0FE", display: "none" };
   const viewStyle = { backgroundColor: "#E8F0FE", display: "block" };
-  const [edit, setEdit] = useState(!userData.brokerage_Details?.firstName);
+  const [edit, setEdit] = useState(!userData.brokerageDetail?.firstName);
   const [SMSAlert, setSMSAlert] = useState(false);
 
   const [firstNameRef, setFirstNameRef] = useState(
-    userData?.brokerage_Details?.firstName || ""
+    userData?.brokerageDetail?.firstName || ""
   );
   const [middleNameRef, setMiddleNameRef] = useState(
-    userData?.brokerage_Details?.middleName || ""
+    userData?.brokerageDetail?.middleName || ""
   );
   const [lastNameRef, setLastNameRef] = useState(
-    userData?.brokerage_Details?.lastName || ""
+    userData?.brokerageDetail?.lastName || ""
   );
   const [brokerageNameRef, setBrokerageNameRef] = useState(
-    userData?.brokerage_Details?.brokerageName || ""
+    userData?.brokerageDetail?.brokerageName || ""
   );
   const [cellNumberRef, setCellNumberRef] = useState(
-    userData?.brokerage_Details?.cellnumber || ""
+    userData?.brokerageDetail?.cellnumber || ""
   );
 
   const [mortageBrokrageLicNoRef, setMortageBrokerageLicNoRef] = useState(
-    userData?.brokerage_Details?.mortageBrokerageLicNo || ""
+    userData?.brokerageDetail?.mortageBrokerageLicNo || ""
   );
   const [mortageBrokerLicNoRef, setMortageBrokerLicNoRef] = useState(
-    userData?.brokerage_Details?.mortageBrokerLicNo || ""
+    userData?.brokerageDetail?.mortageBrokerLicNo || ""
   );
 
   const [profile, setProfile] = useState(
-    userData?.brokerage_Details?.profileImage || null
+    userData?.brokerageDetail?.profileImage || null
   );
 
   const [addressLineRef, setAddressLineRef] = useState(
-    userData?.brokerage_Details?.adressLine1 || ""
+    userData?.brokerageDetail?.adressLine1 || ""
   );
   const [addressLineTwoRef, setAddressLineTwoRef] = useState(
-    userData?.brokerage_Details?.adressLine2 || ""
+    userData?.brokerageDetail?.adressLine2 || ""
   );
 
   const [cityRef, setCityRef] = useState(
-    userData?.brokerage_Details?.city || ""
+    userData?.brokerageDetail?.city || ""
   );
   const [stateRef, setStateRef] = useState(
-    userData?.brokerage_Details?.province || ""
+    userData?.brokerageDetail?.province || ""
   );
   const [zipcodeRef, setZipcodeRef] = useState(
-    userData?.brokerage_Details?.postalCode || ""
+    userData?.brokerageDetail?.postalCode || ""
   );
   const [phoneNumberRef, setPhoneNumberRef] = useState(
-    userData?.brokerage_Details?.phoneNumber || ""
+    userData?.brokerageDetail?.phoneNumber || ""
   );
 
   const [assistantFirstName, setAssistantFirstName] = useState(
-    userData?.brokerage_Details?.assistantFirstName || ""
+    userData?.brokerageDetail?.assistantFirstName || ""
   );
   const [assistantLastName, setAssistantLastName] = useState(
-    userData?.brokerage_Details?.assistantLastName || ""
+    userData?.brokerageDetail?.assistantLastName || ""
   );
   const [assistantPhoneNumber, setAssistantPhoneNumber] = useState(
-    userData?.brokerage_Details?.assistantPhoneNumber || ""
+    userData?.brokerageDetail?.assistantPhoneNumber || ""
   );
   const [assistantEmailAddress, setAssistantEmailAddress] = useState(
-    userData?.brokerage_Details?.assistantEmailAddress || ""
+    userData?.brokerageDetail?.assistantEmailAddress || ""
   );
 
   const [assistantTwoFirstName, setAssistantTwoFirstName] = useState(
-    userData?.brokerage_Details?.assistantTwoFirstName || ""
+    userData?.brokerageDetail?.assistantTwoFirstName || ""
   );
   const [assistantTwoLastName, setAssistantTwoLastName] = useState(
-    userData?.brokerage_Details?.assistantTwoLastName || ""
+    userData?.brokerageDetail?.assistantTwoLastName || ""
   );
 
   const [assistantTwoEmailAddress, setAssistantTwoEmailAddress] = useState(
-    userData?.brokerage_Details?.assistantTwoEmailAddress || ""
+    userData?.brokerageDetail?.assistantTwoEmailAddress || ""
   );
 
   const [assistantTwoPhoneNumber, setAssistantTwoPhoneNumber] = useState(
-    userData?.brokerage_Details?.assistantTwoPhoneNumber || ""
+    userData?.brokerageDetail?.assistantTwoPhoneNumber || ""
   );
 
   const [emailId, setEmailId] = useState(
-    userData?.brokerage_Details?.emailId || ""
+    userData?.brokerageDetail?.emailId || ""
   );
 
   const [streetName, setStreetName] = useState(
-    userData?.brokerage_Details?.streetName || ""
+    userData?.brokerageDetail?.streetName || ""
   );
   const [streetNumber, setStreetNumber] = useState(
-    userData.brokerage_Details?.streetNumber || ""
+    userData.brokerageDetail?.streetNumber || ""
   );
   const [unit, setUnit] = useState(
-    userData?.brokerage_Details?.apartmentNo || ""
+    userData?.brokerageDetail?.apartmentNo || ""
   );
 
   const [apartmentNo, setApartmentNo] = useState(
-    userData?.brokerage_Details?.apartmentNo || ""
+    userData?.brokerageDetail?.apartmentNo || ""
   );
 
   const uploadProfile = (e) => {
@@ -269,40 +269,40 @@ const ProfileInfo = ({
   const onUpdatHandler = () => {
     setIsLoading(true);
     const firstName =
-      firstNameRef !== "" ? firstNameRef : userData.brokerage_Details.firstName;
+      firstNameRef !== "" ? firstNameRef : userData.brokerageDetail.firstName;
     const lastName =
-      lastNameRef !== "" ? lastNameRef : userData.brokerage_Details.lastName;
+      lastNameRef !== "" ? lastNameRef : userData.brokerageDetail.lastName;
     const adressLine1 = addressLineRef;
-    const city = cityRef !== "" ? cityRef : userData.brokerage_Details.city;
+    const city = cityRef !== "" ? cityRef : userData.brokerageDetail.city;
     const state = stateRef;
     const zipCode =
-      zipcodeRef !== "" ? zipcodeRef : userData.brokerage_Details.zipCode;
+      zipcodeRef !== "" ? zipcodeRef : userData.brokerageDetail.zipCode;
     const phoneNumber =
       phoneNumberRef !== ""
         ? phoneNumberRef
-        : userData.brokerage_Details.phoneNumber;
+        : userData.brokerageDetail.phoneNumber;
     const cellNumber =
       cellNumberRef !== ""
         ? cellNumberRef
-        : userData.brokerage_Details.cellNumber;
+        : userData.brokerageDetail.cellNumber;
     const adressLine2 = addressLineTwoRef;
     const middleName = middleNameRef;
     const brokerageName =
       brokerageNameRef !== ""
         ? brokerageNameRef
-        : userData.brokerage_Details.brokerageName;
+        : userData.brokerageDetail.brokerageName;
     const mortageBrokerLicNo =
       mortageBrokerLicNoRef !== ""
         ? mortageBrokerLicNoRef
-        : userData.brokerage_Details.mortageBrokerLicNo;
+        : userData.brokerageDetail.mortageBrokerLicNo;
     const mortageBrokrageLicNo =
       mortageBrokrageLicNoRef !== ""
         ? mortageBrokrageLicNoRef
-        : userData.brokerage_Details.mortageBrokerageLicNo;
+        : userData.brokerageDetail.mortageBrokerageLicNo;
     const emailIdRef =
-      emailId !== "" ? emailId : userData.brokerage_Details.emailId;
+      emailId !== "" ? emailId : userData.brokerageDetail.emailId;
     const streetNameRef =
-      streetName !== "" ? streetName : userData.brokerage_Details.streetName;
+      streetName !== "" ? streetName : userData.brokerageDetail.streetName;
 
     const payload = {
       id: userData.userId,
@@ -609,7 +609,7 @@ const ProfileInfo = ({
             toast.success("Successfully Updated !");
 
             let data = userData;
-            data.brokerage_Details = res.data.userData.broker;
+            data.brokerageDetail = res.data.userData.broker;
             data.smsNotification = res.data.userData.isSms;
             data.emailNotification = res.data.userData.isEmail;
             console.log("brokerageProfile", res.data.userData.broker);
@@ -2244,7 +2244,7 @@ const ProfileInfo = ({
                           className="btn btn2 btn-dark"
                           onClick={onUpdatHandler}
                         >
-                          {userData?.brokerage_Details
+                          {userData?.brokerageDetail
                             ? "Update Profile"
                             : "Create Profile"}
                         </button>

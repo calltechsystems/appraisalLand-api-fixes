@@ -118,7 +118,7 @@ const Form = ({
       const data = {
         email: email,
         password: password,
-        brokerageId: userData.brokerage_Details.id,
+        brokerageId: userData.brokerageDetail.id,
       };
 
       console.log(data);

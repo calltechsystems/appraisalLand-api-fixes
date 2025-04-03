@@ -25,7 +25,7 @@ const ProfileInfo = ({
   const router = useRouter();
 
   const [SelectedImage, setSelectedImage] = useState(
-    userData?.appraiser_Details?.profileImage ||
+    userData?.appraiserDetail?.profileImage ||
       "/assets/images/home/placeholder_01.jpg"
   );
 
@@ -42,62 +42,62 @@ const ProfileInfo = ({
   );
 
   const [firstNameRef, setFirstNameRef] = useState(
-    userData?.appraiser_Details?.firstName || ""
+    userData?.appraiserDetail?.firstName || ""
   );
 
   const [designation, setDesignation] = useState(
-    userData?.appraiser_Details?.designation || ""
+    userData?.appraiserDetail?.designation || ""
   );
   const [middleNameRef, setMiddleNameRef] = useState(
-    userData?.appraiser_Details?.middleName || ""
+    userData?.appraiserDetail?.middleName || ""
   );
 
   const [SMSAlert, setSMSAlert] = useState(false);
 
   const [cellNumber, setCellNumber] = useState(
-    userData?.appraiser_Details?.cellNumber || ""
+    userData?.appraiserDetail?.cellNumber || ""
   );
   const [lastNameRef, setLastNameRef] = useState(
-    userData?.appraiser_Details?.lastName || ""
+    userData?.appraiserDetail?.lastName || ""
   );
   const [companyNameRef, setCompanyNameRef] = useState(
-    userData?.appraiser_Details?.companyName || ""
+    userData?.appraiserDetail?.companyName || ""
   );
 
   const [profile, setProfile] = useState(
-    userData?.appraiser_Details?.profileImage || null
+    userData?.appraiserDetail?.profileImage || null
   );
 
   const [addressLineRef, setAddressLineRef] = useState(
-    userData?.appraiser_Details?.adressLine1 || ""
+    userData?.appraiserDetail?.adressLine1 || ""
   );
   const [addressLineTwoRef, setAddressLineTwoRef] = useState(
-    userData?.appraiser_Details?.adressLine2 || ""
+    userData?.appraiserDetail?.adressLine2 || ""
   );
 
   const [cityRef, setCityRef] = useState(
-    userData?.appraiser_Details?.city || ""
+    userData?.appraiserDetail?.city || ""
   );
   const [stateRef, setStateRef] = useState(
-    userData?.appraiser_Details?.province || ""
+    userData?.appraiserDetail?.province || ""
   );
   const [zipcodeRef, setZipcodeRef] = useState(
-    userData?.appraiser_Details?.postalCode || ""
+    userData?.appraiserDetail?.postalCode || ""
   );
   const [phoneNumberRef, setPhoneNumberRef] = useState(
-    userData?.appraiser_Details?.phoneNumber || ""
+    userData?.appraiserDetail?.phoneNumber || ""
   );
 
   const [commissionRate, setCommissionRate] = useState(
-    userData.appraiser_Details?.commissionRate || ""
+    userData.appraiserDetail?.commissionRate || ""
   );
 
   const [emailId, setEmailId] = useState(
-    userData?.appraiser_Details?.emailId || ""
+    userData?.appraiserDetail?.emailId || ""
   );
 
   const [maxNumberOfAssignedOrders, setMaxNumberOfAssignedOrders] = useState(
-    userData?.appraiser_Details?.maxNumberOfAssignedOrders || ""
+    userData?.appraiserDetail?.maxNumberOfAssignedOrders || ""
   );
 
   const [otherDesignation, setOtherDesignation] = useState("");
@@ -105,8 +105,8 @@ const ProfileInfo = ({
   const [oDesignation, setODesignation] = useState(false); // Toggle for "Other" input
 
   const [selectedImage2, setSelectedImage2] = useState({
-    name: userData?.appraiser_Details?.lenderListUrl ? "" : "",
-    url: userData?.appraiser_Details?.lenderListUrl || "",
+    name: userData?.appraiserDetail?.lenderListUrl ? "" : "",
+    url: userData?.appraiserDetail?.lenderListUrl || "",
   });
 
   useEffect(() => {
@@ -155,13 +155,13 @@ const ProfileInfo = ({
   // };
 
   const [streetName, setStreetName] = useState(
-    userData?.appraiser_Details?.streetName || ""
+    userData?.appraiserDetail?.streetName || ""
   );
   const [streetNumber, setStreetNumber] = useState(
-    userData.appraiser_Details?.streetNumber || ""
+    userData.appraiserDetail?.streetNumber || ""
   );
   const [apartmentNo, setApartmentNo] = useState(
-    userData?.appraiser_Details?.apartmentNo || ""
+    userData?.appraiserDetail?.apartmentNo || ""
   );
 
   // Handler for Designation Change
@@ -276,28 +276,28 @@ const ProfileInfo = ({
       finalDesignation = otherDesignation; // Use "Other Designation" value
     }
     const firstName =
-      firstNameRef !== "" ? firstNameRef : userData.appraiser_Details.firstName;
+      firstNameRef !== "" ? firstNameRef : userData.appraiserDetail.firstName;
     const lastName =
-      lastNameRef !== "" ? lastNameRef : userData.appraiser_Details.lastName;
-    const city = cityRef !== "" ? cityRef : userData.appraiser_Details.city;
+      lastNameRef !== "" ? lastNameRef : userData.appraiserDetail.lastName;
+    const city = cityRef !== "" ? cityRef : userData.appraiserDetail.city;
     const state = stateRef;
     const zipCode =
-      zipcodeRef !== "" ? zipcodeRef : userData.appraiser_Details.zipCode;
+      zipcodeRef !== "" ? zipcodeRef : userData.appraiserDetail.zipCode;
     const phoneNumber =
       phoneNumberRef !== ""
         ? phoneNumberRef
-        : userData.appraiser_Details.phoneNumber;
+        : userData.appraiserDetail.phoneNumber;
     // const cellNumber =
-    //   cellNumber!== "" ? cellNumber : userData.appraiser_Details.cellNumber;
+    //   cellNumber!== "" ? cellNumber : userData.appraiserDetail.cellNumber;
     const adressLine2 = addressLineTwoRef;
     const middleName =
       middleNameRef !== ""
         ? middleNameRef
-        : userData?.appraiser_Details?.middleName;
+        : userData?.appraiserDetail?.middleName;
     const emailIdRef =
-      emailId !== "" ? emailId : userData.appraiser_Details.emailId;
+      emailId !== "" ? emailId : userData.appraiserDetail.emailId;
     const streetNameRef =
-      streetName !== "" ? streetName : userData.appraiser_Details.streetName;
+      streetName !== "" ? streetName : userData.appraiserDetail.streetName;
     const companyName = companyNameRef;
 
     const payload = {
@@ -507,7 +507,7 @@ const ProfileInfo = ({
             let data = userData;
             data.smsNotification = res.data.userData.isSms;
             data.emailNotification = res.data.userData.isEmail;
-            data.appraiser_Details = res.data.userData.appraiser;
+            data.appraiserDetail = res.data.userData.appraiser;
             localStorage.removeItem("user");
             localStorage.setItem("user", JSON.stringify(data));
             setShowCard(true);
@@ -808,7 +808,7 @@ const ProfileInfo = ({
   };
 
   const getLenderListName = () => {
-    const lenderlistUrl = userData?.appraiser_Details?.lenderListUrl;
+    const lenderlistUrl = userData?.appraiserDetail?.lenderListUrl;
     if (lenderlistUrl === "") {
       return "";
     } else {
@@ -1796,7 +1796,7 @@ const ProfileInfo = ({
                             className="btn btn2 btn-dark"
                             onClick={onUpdatHandler}
                           >
-                            {userData?.appraiser_Details
+                            {userData?.appraiserDetail
                               ? "Update Profile"
                               : "Create Profile"}
                           </button>

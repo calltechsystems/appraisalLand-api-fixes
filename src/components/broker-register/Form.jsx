@@ -33,7 +33,7 @@ const Form = ({
 
     const data = {
       email,
-      brokerageId: userData?.brokerage_Details?.id,
+      brokerageId: userData?.brokerageDetail?.id,
     };
 
     try {

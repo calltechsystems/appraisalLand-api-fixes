@@ -309,7 +309,7 @@ export default function Exemple({
 
   const checkIsOfSameCompany = (id) => {
     const data = JSON.parse(localStorage.getItem("user"));
-    if (data.appraiserCompany_Datails?.appraiserCompanyId === id) {
+    if (data.appraiserCompanyDetail?.appraiserCompanyId === id) {
       return true;
     } else {
       return false;
@@ -862,7 +862,7 @@ export default function Exemple({
               "Content-Type": "application/json",
             },
             params: {
-              userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+              userId: data.appraiserCompanyDetail?.appraiserCompanyId,
             },
           })
           .then((res) => {
@@ -951,7 +951,7 @@ export default function Exemple({
           Authorization: `Bearer ${data.token}`,
         },
         params: {
-          userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+          userId: data.appraiserCompanyDetail?.appraiserCompanyId,
         },
       })
       .then((res) => {
@@ -1003,7 +1003,7 @@ export default function Exemple({
         },
         params: {
           // Confirm that 'userId' is the correct key or if it should be 'companyId'
-          userId: data?.appraiserCompany_Datails?.appraiserCompanyId || "",
+          userId: data?.appraiserCompanyDetail?.appraiserCompanyId || "",
         },
       })
       .then((res) => {

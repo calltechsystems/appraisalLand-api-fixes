@@ -68,7 +68,7 @@ const Index = () => {
     setUserData(userData1);
     if (!userData1) {
       router.push("/login");
-    } else if (!userData1?.appraiser_Details?.firstName) {
+    } else if (!userData1?.appraiserDetail?.firstName) {
       router.push("/appraiser-profile");
     }
 

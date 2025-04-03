@@ -959,7 +959,7 @@ export default function Exemple({
     //       Authorization: `Bearer ${data.token}`,
     //     },
     //     params: {
-    //       userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+    //       userId: data.appraiserCompanyDetail?.appraiserCompanyId,
     //     },
     //   })
     //   .then((res) => {
@@ -1011,7 +1011,7 @@ export default function Exemple({
           Authorization: `Bearer ${data.token}`,
         },
         params: {
-          userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+          userId: data.appraiserCompanyDetail?.appraiserCompanyId,
         },
       })
       .then((res) => {
@@ -1030,7 +1030,7 @@ export default function Exemple({
     //       Authorization: `Bearer ${data.token}`,
     //     },
     //     params: {
-    //       userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+    //       userId: data.appraiserCompanyDetail?.appraiserCompanyId,
     //     },
     //   })
     //   .then((res) => {

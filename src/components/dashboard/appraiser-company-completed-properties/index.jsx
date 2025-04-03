@@ -409,7 +409,7 @@ const Index = () => {
     const data = JSON.parse(localStorage.getItem("user"));
     if (!data) {
       router.push("/login");
-    } else if (!data?.appraiserCompany_Datails?.firstName) {
+    } else if (!data?.appraiserCompanyDetail?.firstName) {
       router.push("/appraiser-company-profile");
     }
     if (!data) {

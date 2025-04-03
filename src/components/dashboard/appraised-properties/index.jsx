@@ -221,7 +221,7 @@ const Index = () => {
     setDisable(true);
     const data = JSON.parse(localStorage.getItem("user"));
     const payload = {
-      companyid: data.appraiserCompany_Datails.appraiserCompanyId,
+      companyid: data.appraiserCompanyDetail.appraiserCompanyId,
       propertyid: Number(assignPropertyId),
       appraiserid: Number(selectedAppraiser),
     };
@@ -450,7 +450,7 @@ const Index = () => {
     if (!data) {
       router.push("/login");
     }
-    if (!data?.appraiser_Details?.firstName) {
+    if (!data?.appraiserDetail?.firstName) {
       router.push("appraiser-profile");
     }
     if (!data) {

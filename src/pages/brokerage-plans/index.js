@@ -23,7 +23,7 @@ const Index = () => {
   });
 
   const [canUpgrade, setCanUpgrade] = useState(true);
-  const [userDetailField, setUserDetailsField] = useState("brokerage_Details");
+  const [userDetailField, setUserDetailsField] = useState("brokerageDetail");
   const [userData, setUserData] = useState({});
 
   const [isSubscriptionDetailsEmpty, setIsSubscriptionDetailsEmpty] =

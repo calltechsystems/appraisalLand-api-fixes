@@ -14,22 +14,22 @@ function extractTextFromReactElement(element) {
 
 const getCreatedByName = (userFieldType) => {
   const userInfo = JSON.parse(localStorage.getItem("user")) || {};
-  if (userFieldType === "appraiserCompany_Datails") {
+  if (userFieldType === "appraiserCompanyDetail") {
     return `${userInfo?.[userFieldType]?.firstName || "John"} ${
       userInfo?.[userFieldType]?.lastName || "Doe"
     }`;
   }
-  if (userFieldType === "broker_Details") {
+  if (userFieldType === "brokerDetail") {
     return `${userInfo?.[userFieldType]?.firstName || "John"} ${
       userInfo?.[userFieldType]?.lastName || "Doe"
     }`;
   }
-  if (userFieldType === "appraiser_Details") {
+  if (userFieldType === "appraiserDetail") {
     return `${userInfo?.[userFieldType]?.firstName || "John"} ${
       userInfo?.[userFieldType]?.lastName || "Doe"
     }`;
   }
-  if (userFieldType === "brokerage_Details") {
+  if (userFieldType === "brokerageDetail") {
     return `${userInfo?.[userFieldType]?.assistantFirstName || "John"} ${
       userInfo?.[userFieldType]?.assistantLastName || "Doe"
     }`;

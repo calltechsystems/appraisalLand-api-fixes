@@ -73,7 +73,7 @@ const Index = ({ profileCount, setProfileCount }) => {
       router.push("/login");
     } else {
       setUserData(storedUserData); // Set user data in state
-      if (storedUserData?.appraiserCompany_Datails?.firstName !== null) {
+      if (storedUserData?.appraiserCompanyDetail?.firstName !== null) {
         setShowCard(true);
       }
     }

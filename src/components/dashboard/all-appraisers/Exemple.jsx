@@ -324,8 +324,8 @@ export default function Exemple({
           "Content-Type": "application/json",
         },
         params: {
-          // companyId: data?.appraiserCompany_Datails?.appraiserCompanyId || "", 
-          userId: data?.appraiserCompany_Datails?.appraiserCompanyId || "", 
+          // companyId: data?.appraiserCompanyDetail?.appraiserCompanyId || "", 
+          userId: data?.appraiserCompanyDetail?.appraiserCompanyId || "", 
 
         },
       })
@@ -349,7 +349,7 @@ export default function Exemple({
           Authorization: `Bearer ${data.token}`,
         },
         params: {
-          userId: data.appraiserCompany_Datails?.appraiserCompanyId,
+          userId: data.appraiserCompanyDetail?.appraiserCompanyId,
         },
       })
       .then((res) => {

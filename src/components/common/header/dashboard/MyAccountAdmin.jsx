@@ -25,7 +25,7 @@ const MyAccount = ({ user, userData }) => {
           height={45}
           className="float-start"
           src={
-            userData?.brokerage_Details?.profileImage ||
+            userData?.brokerageDetail?.profileImage ||
             "/assets/images/team/a2.jpg"
           }
           alt="e1.png"

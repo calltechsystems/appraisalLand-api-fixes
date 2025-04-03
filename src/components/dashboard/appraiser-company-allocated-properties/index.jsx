@@ -260,7 +260,7 @@ const Index = () => {
     const propertyId = Number(assignPropertyId);
     const appraiserId = Number(assignAppraiserId);
     const companyId = Number(
-      userData.appraiserCompany_Datails?.appraiserCompanyId
+      userData.appraiserCompanyDetail?.appraiserCompanyId
     );
 
     const payload = {
@@ -701,7 +701,7 @@ const Index = () => {
       }
 
       const payload = {
-        companyid: data.appraiserCompany_Datails?.appraiserCompanyId,
+        companyid: data.appraiserCompanyDetail?.appraiserCompanyId,
         propertyid: Number(assignPropertyId),
         appraiserid:
           selectedAppraiser == "self"
@@ -789,7 +789,7 @@ const Index = () => {
   //   }
   //   const data = JSON.parse(localStorage.getItem("user"));
   //   const payload = {
-  //     companyid: data.appraiserCompany_Datails.appraiserCompanyId,
+  //     companyid: data.appraiserCompanyDetail.appraiserCompanyId,
   //     propertyid: Number(assignPropertyId),
   //     appraiserid: Number(
   //       selectedAppraiser === -1 ? AssignAppraisers[0].id : selectedAppraiser

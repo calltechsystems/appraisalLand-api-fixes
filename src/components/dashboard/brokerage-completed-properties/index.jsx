@@ -258,7 +258,7 @@ const Index = () => {
     if (!data) {
       router.push("/login");
     }
-    // else if (!data?.brokerage_Details.firstName) {
+    // else if (!data?.brokerageDetail.firstName) {
     //   router.push("/appraiser-profile");
     // }
     if (!data) {

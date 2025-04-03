@@ -304,7 +304,7 @@ const Index = () => {
     setUserData(data);
     if (!data) {
       router.push("/login");
-    } else if (!data?.broker_Details?.firstName) {
+    } else if (!data?.brokerDetail?.firstName) {
       router.push("/my-profile");
     }
 
@@ -442,8 +442,8 @@ const Index = () => {
                     }}
                   >
                     <span style={{ color: "#2e008b" }}>Welcome</span>{" "}
-                    {`${userData?.broker_Details?.firstName || "First Name"} ${
-                      userData?.broker_Details?.lastName || "Last Name"
+                    {`${userData?.brokerDetail?.firstName || "First Name"} ${
+                      userData?.brokerDetail?.lastName || "Last Name"
                     }`}
                   </h2>
 

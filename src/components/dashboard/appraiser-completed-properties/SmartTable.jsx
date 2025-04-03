@@ -114,7 +114,7 @@ function SmartTable(props) {
     const allData = props.properties;
 
     getTheDownloadView(
-      "appraiser_Details",
+      "appraiserDetail",
       allData,
       "Appraiser Completed Properties",
       staticHeaders

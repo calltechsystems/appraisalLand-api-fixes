@@ -148,7 +148,7 @@ const Index = () => {
 
   // if (!userData) {
   //   router.push("/login");
-  // } else if (!userData?.broker_Details?.firstName) {
+  // } else if (!userData?.brokerDetail?.firstName) {
   //   router.push("/my-profile");
   // }
 
@@ -320,7 +320,7 @@ const Index = () => {
     setUserData(data);
     if (!data) {
       router.push("/login");
-    } else if (!data?.brokerage_Details?.firstName) {
+    } else if (!data?.brokerageDetail?.firstName) {
       router.push("/brokerage-profile");
     }
 
@@ -477,11 +477,11 @@ const Index = () => {
                       }}
                     >
                       <span style={{ color: "#2e008b" }}>Welcome</span>{" "}
-                      {userData?.brokerage_Details?.firstName
-                        ? userData?.brokerage_Details?.firstName
+                      {userData?.brokerageDetail?.firstName
+                        ? userData?.brokerageDetail?.firstName
                         : "firstName"}{" "}
-                      {userData?.brokerage_Details?.lastName
-                        ? userData?.brokerage_Details?.lastName
+                      {userData?.brokerageDetail?.lastName
+                        ? userData?.brokerageDetail?.lastName
                         : "lastName"}
                     </h2>
                     {/* <p>We are glad to see you again!</p> */}

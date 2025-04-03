@@ -22,7 +22,7 @@ export default async function handler(request, response) {
       newPassword: newPassword,
     };
     const changePasswordResponse = await axios.post(
-      `${domain}/com.appraisalland.Login/changepassword`,
+      `${domain}/com.appraisalland.Login/ChangePasswordAsync`,
       formData,
       {
         headers: {

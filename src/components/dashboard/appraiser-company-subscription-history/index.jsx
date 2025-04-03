@@ -74,7 +74,7 @@ const Index = () => {
     userData = JSON.parse(localStorage.getItem("user"));
     if (!userData) {
       router.push("/login");
-    } else if (!userData?.appraiserCompany_Datails?.firstName) {
+    } else if (!userData?.appraiserCompanyDetail?.firstName) {
       router.push("/appraiser-company-profile");
     }
 

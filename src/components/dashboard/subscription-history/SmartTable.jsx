@@ -63,7 +63,7 @@ function SmartTable(props) {
     ];
 
     getTheDownloadView(
-      "appraiser_Details",
+      "appraiserDetail",
       props.allProperties,
       "Appraiser Transaction History",
       headers

@@ -30,7 +30,7 @@ const Form = ({
 
       const data = {
         email,
-        companyId: userData.appraiserCompany_Datails.appraiserCompanyId, // Replace with actual company ID
+        companyId: userData.appraiserCompanyDetail.appraiserCompanyId, // Replace with actual company ID
       };
 
       try {

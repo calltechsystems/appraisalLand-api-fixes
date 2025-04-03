@@ -24,7 +24,7 @@ const Index = () => {
 
   const [canUpgrade, setCanUpgrade] = useState(true);
   const [userDetailField, setUserDetailsField] = useState(
-    "appraiserCompany_Datails"
+    "appraiserCompanyDetail"
   );
   const [userData, setUserData] = useState({});
 
