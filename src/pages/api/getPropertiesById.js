@@ -1,44 +1,61 @@
+// pages/api/getPropertyByOrderId.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
 
-  try {
-    const token = request.headers.authorization;
-    const orderId = request.query.item;
+  if (req.method !== "GET") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
-    const userResponse = await axios.get(
-      `${domain}/com.appraisalland.Property/getPropertyByOrderID`,
+  try {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const { item: orderId } = req.query;
+
+    if (!orderId) {
+      return res.status(400).json({ success: false, message: "Missing orderId in query" });
+    }
+
+    const responseData = await axios.get(
+      `${domain}/com.appraisalland.Property/GetPropertyByOrderIdAsync`,
       {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
         params: {
-          OrderId: orderId,
+          orderId,
         },
       }
     );
-    const users = userResponse.data;
 
-    return response.status(200).json({ msg: "OK", data: users });
+    return res.status(200).json({
+      success: true,
+      message: "Property data fetched successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Get Property by Order ID Error:", err);
 
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
-
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return res.status(err.response.status).json({
+        success: false,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.response.data?.message || "Unknown error"
+            : "Failed to fetch property data",
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

@@ -1,47 +1,73 @@
+// pages/api/changePassword.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-export default async function handler(request, response) {
+
+export default async function handler(req, res) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
 
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
-    const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
-
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
     }
 
-    const { email, oldPassword, newPassword, token } = body;
+    const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
+    const decryptedBody = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
+
+    if (!decryptedBody) {
+      return res.status(403).json({ success: false, message: "Invalid encrypted payload" });
+    }
+
+    const { email, oldPassword, newPassword } = decryptedBody;
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
     const formData = {
-      email: email,
-      oldPassword: oldPassword,
-      newPassword: newPassword,
+      email,
+      oldPassword,
+      newPassword,
     };
+
     const changePasswordResponse = await axios.post(
       `${domain}/com.appraisalland.Login/ChangePasswordAsync`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
           "Content-Type": "application/json",
         },
       }
     );
-    return response.status(200).json({ response: changePasswordResponse.data });
-  } catch (err) {
-    console.log({err})
-    if (err.response) {
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); 
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      return response.status(500).json({ error: "Internal Server Error" });
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+      data: changePasswordResponse.data,
+    });
+  } catch (err) {
+    console.error("Change Password Error:", err);
+
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to change password";
+
+      return res.status(statusCode).json({ success: false, message: errorMessage });
     }
+
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }

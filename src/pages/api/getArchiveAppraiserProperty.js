@@ -1,43 +1,56 @@
+// pages/api/getAppraiserArchivedProperties.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
 
-  const userId = request.query.userId;
+  if (req.method !== "GET") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const token = request.headers.authorization;
-    const userResponse = await axios.get(
-      `${domain}/com.appraisalland.Property/getApprasierArchiveProperty`,
+    const token = req.headers.authorization;
+    const userId = request.query.userId;
+
+    if (!token || !userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const responseData = await axios.get(
+      `${domain}/com.appraisalland.Property/GetAppraiserArchivePropertyAsync`, 
       {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
         params: {
-          UserId: userId,
+          userId: userId,
         },
       }
     );
-    const users = userResponse.data;
 
-    return response.status(200).json({ msg: "OK", data: users });
+    return res.status(200).json({
+      success: true,
+      message: "Archived properties fetched successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Get Appraiser Archived Properties Error:", err);
 
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
-
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return res.status(err.response.status).json({
+        success: false,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.response.data?.message || "Unknown error"
+            : "Failed to fetch archived properties",
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

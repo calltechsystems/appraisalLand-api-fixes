@@ -1,48 +1,64 @@
+// pages/api/removeFromWishlist.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
 
 
- async function handler (request,response) {
+export default async function handler(req, res) {
+  const domain = process.env.BACKEND_DOMAIN;
 
-    const decryptionKey = process.env.CRYPTO_SECRET_KEY;
-    const domain = process.env.BACKEND_DOMAIN;
+  if (req.method !== "DELETE") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
   try {
-    const token = request.headers.authorization;
-    const userId = request.query.userId;
+    const token = req.headers.authorization;
 
-const userResponse = await axios.delete(`${domain}/com.appraisalland.Wishlist/RemoveFromWishlist`,
-    {
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const { wishlistId } = req.query;
+
+    if (!wishlistId) {
+      return res.status(400).json({ success: false, message: "Missing wishlist ID" });
+    }
+
+    const userResponse = await axios.delete(
+      `${domain}/com.appraisalland.Wishlist/RemoveFromWishlistAsync`,
+      {
         headers: {
-          Authorization:token,
-          "Content-Type":"application/json"
+          Authorization: token,
+          "Content-Type": "application/json",
         },
-        params:{
-          id:userId
-        }
-      });
-    const users = userResponse.data;
-
-    return response.status(200).json({msg:"OK",data : users});
-  } catch (err) {
-    console.log(err);
-    
-    if (err.response) {
-        // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-        const axiosError = err.response.data;
-        const statusCode = err.response.status;
-        console.error(statusCode,axiosError.message); // Log the error for debugging
-  
-        return response.status(statusCode).json({ error: axiosError.message });
-      } else {
-        // Handle other types of errors
-        return response.status(500).json({ error: "Internal Server Error" });
+        params: {
+          wishlistId: wishlistId, 
+        },
       }
-  
-    
+    );
 
+    return res.status(200).json({
+      success: true,
+      message: "Item removed from wishlist",
+      data: userResponse.data,
+    });
+  } catch (err) {
+    console.error("Remove From Wishlist Error:", err);
+
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to remove from wishlist";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
- 
-export default handler;
-

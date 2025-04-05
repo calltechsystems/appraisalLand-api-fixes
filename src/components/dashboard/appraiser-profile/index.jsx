@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import Header from "../../common/header/dashboard/Header_02";
 import SidebarMenu from "../../common/header/dashboard/SidebarMenu_01";
 import MobileMenu from "../../common/header/MobileMenu_01";
-import ProfileInfo from "./ProfileInfo";
-import Form from "./Form";
+import ProfileEditForm from "./ProfileEditForm";
+import ProfileViewForm from "./ProfileViewForm";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 const Index = ({ profileCount, setProfileCount }) => {
-  const [showCard, setShowCard] = useState(false); // Set to false by default
-  const [userData, setUserData] = useState({}); // State to hold user data
+  const [showCard, setShowCard] = useState(false); 
+  const [userData, setUserData] = useState({}); 
   const router = useRouter();
   const [modalIsOpenError, setModalIsOpenError] = useState(false);
   const [modalIsOpenError_01, setModalIsOpenError_01] = useState(false);
@@ -24,12 +24,10 @@ const Index = ({ profileCount, setProfileCount }) => {
       setLastActivityTimestamp(Date.now());
     };
 
-    // Attach event listeners for user activity
     window.addEventListener("mousemove", activityHandler);
     window.addEventListener("keydown", activityHandler);
     window.addEventListener("click", activityHandler);
 
-    // Cleanup event listeners when the component is unmounted
     return () => {
       window.removeEventListener("mousemove", activityHandler);
       window.removeEventListener("keydown", activityHandler);
@@ -38,19 +36,16 @@ const Index = ({ profileCount, setProfileCount }) => {
   }, []);
 
   useEffect(() => {
-    // Check for inactivity every minute
     const inactivityCheckInterval = setInterval(() => {
       const currentTime = Date.now();
       const timeSinceLastActivity = currentTime - lastActivityTimestamp;
 
-      // Check if there has been no activity in the last 10 minutes (600,000 milliseconds)
       if (timeSinceLastActivity > 600000) {
         localStorage.removeItem("user");
         router.push("/login");
       }
-    }, 60000); // Check every minute
+    }, 60000); 
 
-    // Cleanup the interval when the component is unmounted
     return () => clearInterval(inactivityCheckInterval);
   }, [lastActivityTimestamp]);
 
@@ -61,10 +56,10 @@ const Index = ({ profileCount, setProfileCount }) => {
     } else {
       setUserData(storedUserData); // Set user data in state
       if (storedUserData?.appraiserDetail?.firstName !== null) {
-        setShowCard(true); // Show content if conditions are met
+        setShowCard(true); 
       }
     }
-  }, []); // Empty dependency array for componentDidMount-like behavior
+  }, []); 
 
   const chnageShowCardHandler = (val) => {
     setShowCard(val);
@@ -94,7 +89,6 @@ const Index = ({ profileCount, setProfileCount }) => {
           <SidebarMenu />
         </div>
       </div>
-      {/* End sidebar_menu */}
 
       <section className="our-dashbord dashbord bgc-f7 pb50">
         <div className="container-fluid ovh">
@@ -103,24 +97,19 @@ const Index = ({ profileCount, setProfileCount }) => {
               <div className="row">
                 <div className="col-lg-12 maxw100flex-992">
                   <div className="row">
-                    {/* <div className="col-lg-12">
-                      <div className="breadcrumb_content style2">
-                        <h2 className="breadcrumb_title">My Profile</h2>
-                      </div>
-                    </div> */}
                     <div className="col-lg-12">
                       <div className="my_dashboard_review">
                         <div className="row">
                           <div className="col-xl-12">
                             {showCard ? (
                               <div className="mb-5">
-                                <Form
+                                <ProfileViewForm
                                   userData={userData}
                                   chnageShowCardHandler={chnageShowCardHandler}
                                 />
                               </div>
                             ) : (
-                              <ProfileInfo
+                              <ProfileEditForm
                                 profileCount={profileCount}
                                 setProfileCount={setProfileCount}
                                 setShowCard={setShowCard}

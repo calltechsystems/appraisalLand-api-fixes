@@ -126,7 +126,7 @@ const Form = ({
         .post("/api/login", encryptedData)
         .then((res) => {
           toast.dismiss();
-          const { success, data, message } = res.data?.response;
+          const { success, data, message } = res.data;
           if (success) {
             toast.success(message);
             const redirectionUrl = handleResponseData(data);

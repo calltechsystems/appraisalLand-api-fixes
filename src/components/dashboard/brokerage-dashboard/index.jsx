@@ -2,7 +2,7 @@ import Header from "../../common/header/dashboard/HeaderBrokerage";
 import SidebarMenu from "../../common/header/dashboard/SidebarMenuBrokerage";
 import MobileMenu from "../../common/header/MobileMenu_02";
 import Filtering from "./Filtering";
-import AllStatistics from "./AllStatistics";
+import AllStatistics from "./AllStatisticsCard";
 import StatisticsChart from "./StatisticsChart";
 import StatisticsPieChart from "./StatisticsPieChart";
 import { useRouter } from "next/router";
@@ -314,79 +314,104 @@ const Index = () => {
   }, [filterQuery, bids, data]);
 
   useEffect(() => {
-    setData([]);
-    setBids([]);
-    const data = JSON.parse(localStorage.getItem("user"));
-    setUserData(data);
-    if (!data) {
-      router.push("/login");
-    } else if (!data?.brokerageDetail?.firstName) {
-      router.push("/brokerage-profile");
-    }
+    const fetchDashboardData = async () => {
+      try {
+        setData([]);
+        setBids([]);
 
-    const func = () => {
-      const data = JSON.parse(localStorage.getItem("user"));
-      axios
-        .get("/api/getAllListedProperties", {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        setUserData(storedUser);
+
+        if (!storedUser) {
+          router.push("/login");
+          return;
+        }
+
+        if (!storedUser?.brokerageDetail?.firstName) {
+          router.push("/brokerage-profile");
+          return;
+        }
+
+        // Fetch listed properties
+        const propertyResponse = await axios.get(
+          "/api/getAllListedProperties",
+          {
+            headers: {
+              Authorization: `Bearer ${storedUser?.token}`,
+              "Content-Type": "application/json",
+            },
+            params: {
+              userId: storedUser?.userId,
+            },
+          }
+        );
+
+        const {
+          success,
+          message,
+          data: propertiesData,
+        } = propertyResponse.data;
+        if (!success) {
+          toast.error(message);
+          return;
+        }
+        const propertyList = propertiesData.properties.$values;
+        const filteredProperties = propertyList.filter(
+          (property) => String(property.userId) === String(storedUser.userId)
+        );
+        const formattedChartData = filterData(filteredProperties);
+
+        setData(filteredProperties);
+        setChartData(formattedChartData);
+        setShowLineGraph(true);
+
+        // Fetch bids
+        const bidsResponse = await axios.get("/api/getAllBids", {
           headers: {
-            Authorization: `Bearer ${data?.token}`,
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedUser?.token}`,
           },
           params: {
-            userId: data?.userId,
+            email: storedUser?.userEmail,
           },
-        })
-        .then((res) => {
-          const temp = res.data.data.properties.$values;
-          const pdated = temp.filter((prop, index) => {
-            if (String(prop.userId) === String(data.userId)) return true;
-            else return false;
-          });
-
-          const dataTemp = filterData(pdated);
-          setData(pdated);
-          setChartData(dataTemp);
-          setShowLineGraph(true);
-          setRerender(false);
-        })
-        .catch((err) => {
-          toast.error(err?.response?.data?.error);
         });
 
-      axios
-        .get("/api/getAllBids", {
-          headers: {
-            Authorization: `Bearer ${data.token}`,
-          },
-          params: {
-            email: data.userEmail,
-          },
-        })
-        .then((res) => {
-          console.log(res.data.data.$values);
-          const tempBids = res.data.data.$values;
-          let acceptedBid = 0;
-          let allBids = [];
-          tempBids.map((prop, index) => {
-            if (String(prop.userId) === String(data.userId)) {
-              if (prop.status === 1) {
-                acceptedBid += 1;
-              }
-              allBids.push(prop);
+        const {
+          success: bidSuccess,
+          message: bidMessage,
+          data: bidsData,
+        } = bidsResponse.data;
+
+        if (!bidSuccess) {
+          toast.error(bidMessage);
+          return;
+        }
+        const bidList = bidsData.data.$values;
+        let acceptedBidCount = 0;
+        let allBids = [];
+
+        bidList.forEach((bid) => {
+          if (String(bid.userId) === String(storedUser.userId)) {
+            if (bid.status === 1) {
+              acceptedBidCount += 1;
             }
-          });
-          console.log("acceptedBid", acceptedBid);
-          setAcceptedBids(acceptedBid);
-
-          setBids(allBids);
-        })
-        .catch((err) => {
-          toast.error(err);
-          // setModalIsOpenError(true);
+            allBids.push(bid);
+          }
         });
+
+        setAcceptedBids(acceptedBidCount);
+        setBids(allBids);
+      } catch (error) {
+        toast.error(
+          error?.response?.data?.error ||
+            "An error occurred while fetching data"
+        );
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setRefresh(false);
+      }
     };
-    func();
-    setRefresh(false);
+
+    fetchDashboardData();
   }, [refresh]);
 
   useEffect(() => {

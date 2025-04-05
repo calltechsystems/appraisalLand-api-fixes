@@ -1,8 +1,14 @@
+// pages/api/postRecurringSubscription.js
 import axios from "axios";
-// import CryptoJS from "crypto-js";
 
-export default async function handler(request, response) {
+
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
     const {
       userId,
@@ -18,29 +24,41 @@ export default async function handler(request, response) {
       applicationContext,
       paymentRequestSent,
       paymentRequestReceived,
-      paypalSubscriptionId
-    } = request.body;
+      paypalSubscriptionId,
+    } = req.body;
 
-    const token = request.headers.authorization;
+    if (!userId || !newPlanId || !paymentId || !paypalSubscriptionId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
 
-    const userResponse = await axios.post(
-      `${domain}/com.appraisalland.Payments/postRecurringSubscriptionsDetails`,
-      {
-        userId,
-        newPlanId,
-        customId,
-        paymentId,
-        startTime,
-        paymentStatus,
-        paymenttype,
-        currencycode,
-        subscriber,
-        paymentSource,
-        applicationContext,
-        paymentRequestSent,
-        paymentRequestReceived,
-        paypalSubscriptionId
-      },
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const payload = {
+      userId,
+      newPlanId,
+      customId,
+      paymentId,
+      startTime,
+      paymentStatus,
+      paymenttype,
+      currencycode,
+      subscriber,
+      paymentSource,
+      applicationContext,
+      paymentRequestSent,
+      paymentRequestReceived,
+      paypalSubscriptionId,
+    };
+
+    const responseData = await axios.post(
+      `${domain}/com.appraisalland.Payments/PostRecurringSubscriptionsDetailAsync`,
+      payload,
       {
         headers: {
           Authorization: token,
@@ -49,21 +67,30 @@ export default async function handler(request, response) {
       }
     );
 
-    return response.status(201).json({ msg: "Successfully Saved!!" });
+    return res.status(201).json({
+      success: true,
+      message: "Recurring subscription details saved",
+      data: responseData.data,
+    });
   } catch (err) {
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      console.log(err);
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+    console.error("Post Recurring Subscription Error:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to save subscription";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-

@@ -1,32 +1,54 @@
+// pages/api/getPropertyByUserId.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
+import { apiResponseHandling } from "../../utils/apiResponseHandler";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
 
-  try {
-    const token = request.headers.authorization;
-    const UserID = request.query.UserID;
+  if (req.method !== "GET") {
+    return res
+      .status(405)
+      .json({ success: false, message: "Method Not Allowed" });
+  }
 
-    const userResponse = await axios.get(
-      `${domain}/com.appraisalland.Property/getPropertyByUserId`,
+  try {
+    const token = req.headers.authorization;
+    const userId = request.query.userId;
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const propertiesResponse = await axios.get(
+      `${domain}/com.appraisalland.Property/GetPropertyByUserIdAsync`,
       {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
-        params:{
-          UserID : UserID
-        }
+        params: {
+          userId: userId,
+        },
       }
     );
 
-    return response.status(200).json({ msg: "OK", data: userResponse.data });
+    return res.status(propertiesResponse.status).json(propertiesResponse.data)
+
   } catch (err) {
-    console.log(err);
-    return response.status(500).json({ error: "Internal Server Error" });
+    console.error("Get Property By UserId Error:", err);
+
+    if (err.response) {
+      return res.status(err.response.status).json({
+        success: false,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.response.data?.message || "Unknown error"
+            : "Failed to fetch property",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

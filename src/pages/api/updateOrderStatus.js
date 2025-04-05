@@ -5,61 +5,63 @@ async function handler(request, response) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
 
+  if (request.method !== "PUT") {
+    return response.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = request.body?.data;
+
+    if (!encryptedBody) {
+      return response.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    const { token, quoteId, remark, statusDate, orderStatus } = body;
+
+    if (!quoteId || !orderStatus || !statusDate) {
+      return response.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    const {
-      token,
-      Quoteid,
+    const payload = {
+      quoteId: quoteId,
+      orderStatus: orderStatus,
       remark,
       statusDate,
-      OrderStatus
-      
-    } = body;
+    };
 
-    const payload={
-      Quoteid:Quoteid,
-      OrderStatus:OrderStatus,
-      remark:remark,
-      statusDate:statusDate
-    }
-
-   
-    const userResponse = await axios.put(`${domain}/com.appraisalland.Bid/updateApprasialStatus`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const apiResponse = await axios.put(
+      `${domain}/com.appraisalland.Bid/UpdateApprasialStatusAsync`,
+      payload,
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
       }
-      
+    );
+
+    return response.status(200).json({
+      success: true,
+      message: "Appraisal status updated successfully",
+      data: apiResponse.data,
     });
-    const user = userResponse.data;
-
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-    return response
-      .status(200)
-      .json({ msg: "Successfully updated", userData: user });
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+    console.error("Error updating appraisal status:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      const statusCode = err.response.status;
+      const message =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Appraisal status update failed"
+          : "Unable to update appraisal status";
+
+      return response.status(statusCode).json({ success: false, message });
     }
+
+    return response.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }
 

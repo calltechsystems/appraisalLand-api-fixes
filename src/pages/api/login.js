@@ -1,39 +1,46 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import { apiResponseHandling } from "../../utils/apiResponseHandler";
 
-async function handler(request, response) {
+async function handler(req, res) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
 
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const encryptedBody = await request.body.data;
+
+    const encryptedBody = req.body.data;
+
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
-    const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
+    const decryptedBody = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
-    }
+    const { email, password } = decryptedBody;
 
-    const { email, password } = body;
     const loginResponse = await axios.post(
       `${domain}/com.appraisalland.Login/LoginAsync`,
+      { email, password },
       {
-        email: email,
-        password: password,
+        headers: { "Content-Type": "application/json" },
       }
     );
-    return response.status(200).json({ response: loginResponse.data });
-  } catch (err) {
-    if (err.response) {
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      return response.status(500).json({ error: "Internal Server Error" });
-    }
+    return res.status(loginResponse.status).json(loginResponse.data)
+  } catch (err) {
+    const status = err?.response?.status;
+    const message = err?.response?.data?.message || err.message || "Unknown error";
+
+
+    return res.status(status || 500).json({
+      success: false,
+      message,
+    });
   }
 }
 

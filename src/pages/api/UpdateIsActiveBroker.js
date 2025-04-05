@@ -4,52 +4,59 @@ import CryptoJS from "crypto-js";
 export default async function handler(request, response) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
+
+  if (request.method !== "PUT") {
+    return response.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = request.body?.data;
+
+    if (!encryptedBody) {
+      return response.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    if (!body || !body.brokerId || !body.brokerageId || body.isActive === undefined) {
+      return response.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    const { brokerageId,brokerId,IsActive } = body;
-
+    const { brokerId, brokerageId, isActive } = body;
     const token = request.headers.authorization;
 
-  
-    const userResponse = await axios.put(
+    const apiResponse = await axios.put(
       `${domain}/com.appraisalland.Brokerage/updateBrokerIsActive`,
       {
-          brokerId:brokerId,
-            brokerageId:brokerageId,
-            value:IsActive
-      
+        brokerId,
+        brokerageId,
+        value: isActive,
       },
       {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
-       
       }
     );
-    const user = userResponse.data;
 
-    return response.status(201).json({ msg: "Successfully Created !!" });
+    return response.status(200).json({
+      success: true,
+      message: "Broker status updated successfully",
+      data: apiResponse.data,
+    });
   } catch (err) {
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      console.log(err);
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+      const message =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Failed to update broker status"
+          : "Unable to update broker status";
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return response.status(statusCode).json({ success: false, message });
     }
+
+    return response.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }

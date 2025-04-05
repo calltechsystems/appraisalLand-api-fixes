@@ -1,24 +1,36 @@
+// pages/api/archivePropertyByBroker.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
 
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const token = request.headers.authorization;
-    const status = request.query.status;
-    const orderId = request.query.orderId;
+    const token = req.headers.authorization;
     const userId = request.query.userId;
+
+    if (!token || !userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const { status, orderId } = req.query;
+
+    if (!orderId || typeof status === "undefined") {
+      return res.status(400).json({ success: false, message: "Missing required query parameters" });
+    }
 
     const payload = {
       userId: Number(userId),
-      status: String(status) === "true" ? true : false,
+      status: status === "true",
       orderId: Number(orderId),
-    }
-    console.log(payload)
-    const userResponse = await axios.post(
-      `${domain}/com.appraisalland.Property/archievePropertyByBroker`,
+    };
+
+    const responseData = await axios.post(
+      `${domain}/com.appraisalland.Property/ArchivePropertyByBrokerAsync`,
       payload,
       {
         headers: {
@@ -27,23 +39,31 @@ async function handler(request, response) {
         },
       }
     );
-    const users = userResponse.data;
 
-    return response.status(200).json({ msg: "OK", data: users });
+    return res.status(200).json({
+      success: true,
+      message: "Property archive status updated",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+    console.error("Archive Property Error:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to archive property";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

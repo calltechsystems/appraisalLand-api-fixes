@@ -1,43 +1,55 @@
+// pages/api/getAllAppraiserCompanies.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
 
 
- async function handler (request,response) {
+export default async function handler(req, res) {
+  const domain = process.env.BACKEND_DOMAIN2;
 
-    const decryptionKey = process.env.CRYPTO_SECRET_KEY;
-    const domain = process.env.BACKEND_DOMAIN2;
+  if (req.method !== "GET") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
   try {
-    const token = request.headers.authorization;
+    const token = req.headers.authorization;
 
-  const userResponse = await axios.get(`${domain}/com.appraisalland.Admin/getAllAppraiserCompany`,
-    {
-        headers: {
-          Authorization:token,
-          "Content-Type":"application/json"
-        }
-      });
-    const users = userResponse.data;
-
-
-    return response.status(200).json({msg:"OK",data : users});
-  } catch (err) {
-    
-    console.log(err);
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode,axiosError.message); // Log the error for debugging
-
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
+    const responseData = await axios.get(
+      `${domain}/com.appraisalland.Admin/GetAllAppraiserCompanyAsync`,
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Appraiser companies fetched successfully",
+      data: responseData.data,
+    });
+  } catch (err) {
+    console.error("Get Appraiser Companies Error:", err);
+
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to fetch appraiser companies";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
- 
-export default handler;
-

@@ -1,52 +1,75 @@
+// pages/api/updateOrderCancelOnHold.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
+  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+  if (req.method !== "PUT") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
+
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
-    }
+    const { token, orderId, status, value } = body || {};
 
-    const { token, orderId, status, value } = body;
+    if (!token || !orderId || typeof status !== "boolean" || typeof value !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "Missing or invalid required fields",
+      });
+    }
 
     const payload = {
-      orderId:orderId,
-      status:status,
-      value:value
-    }
-const userResponse = await axios.put(`${domain}/com.appraisalland.Property/updateOrder_Cancel_OnHold`, payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    });
-    const user = userResponse.data;
+      orderId,
+      status,
+      value,
+    };
 
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-    
-    return response.status(200).json({ msg: "OK", userData: user });
+    const responseData = await axios.put(
+      `${domain}/com.appraisalland.Property/UpdateOrderCancelOnHoldAsync`,
+      payload,
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Order cancel/on-hold status updated successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Update Cancel/Hold Error:", err);
+
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to update cancel/on-hold status";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

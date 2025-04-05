@@ -1,18 +1,33 @@
+// pages/api/updateAppraiserProfile.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
+  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+  if (req.method !== "PUT") {
+    return res
+      .status(405)
+      .json({ success: false, message: "Method Not Allowed" });
+  }
 
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
+
+    if (!encryptedBody) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
     if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid encrypted payload" });
     }
 
     const {
@@ -37,35 +52,44 @@ async function handler(request, response) {
       emailId,
       apartmentNo,
       smsNotification,
-      emailNotification
+      emailNotification,
     } = body;
 
+    if (!id || !token) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Missing required fields: id or token",
+        });
+    }
+
     const formData = {
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
-      companyName: companyName,
-      city: city,
-      province: province,
-      postalCode: postalCode,
+      firstName,
+      middleName,
+      lastName,
+      companyName,
+      city,
+      province,
+      postalCode,
       area: "",
-      lenderListUrl: lenderListUrl,
-      apartmentNo: apartmentNo,
+      lenderListUrl,
+      apartmentNo,
       CellNumber: cellNumber,
-      streetName: streetName,
-      streetNumber: streetNumber,
-      phoneNumber: phoneNumber,
+      streetName,
+      streetNumber,
+      phoneNumber,
       commissionRate: Number(commissionRate),
       maxNumberOfAssignedOrders: Number(maxNumberOfAssignedOrders),
-      designation: designation,
-      profileImage: profileImage,
-      emailId: emailId,
-      getSms : smsNotification ? 1 : 0,
-      getEmail : emailNotification ? 1 : 0
+      designation,
+      profileImage,
+      emailId,
+      getSms: smsNotification ? 1 : 0,
+      getEmail: emailNotification ? 1 : 0,
     };
 
-    const userResponse = await axios.put(
-      `${domain}/com.appraisalland.AppraiserIndividual/updateAppraiserProfile`,
+    const profileResponse = await axios.put(
+      `${domain}/com.appraisalland.Appraiser/UpdateAppraiserProfileAsync`,
       formData,
       {
         headers: {
@@ -73,32 +97,31 @@ async function handler(request, response) {
           "Content-Type": "application/json",
         },
         params: {
-          AppraiserId: id,
+          appraiserId: id,
         },
       }
     );
-    const user = userResponse.data;
 
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-    return response
-      .status(200)
-      .json({ msg: "Successfully updated", userData: user });
+    return res.status(profileResponse.status).json(profileResponse.data);
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+    console.error("Update Appraiser Error:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Update failed"
+          : "Unable to update profile";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

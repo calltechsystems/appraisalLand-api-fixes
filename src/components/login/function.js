@@ -1,6 +1,5 @@
 export const handleResponseData = (loginResponse) => {
   let redirectionUrl = "";
-  console.log({loginResponse})
   localStorage.setItem("user", JSON.stringify(loginResponse));
   if (loginResponse.userType === 7) {
     redirectionUrl = "/appraiser-company-dashboard-admin";

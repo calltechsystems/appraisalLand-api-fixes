@@ -22,10 +22,10 @@ import CryptoJS from "crypto-js";
       propertyId : propertyId,
         userId:userId,
     }
-   const userResponse = await axios.post(`${domain}/com.appraisalland.Wishlist/AddToWishlist`, formData,
+   const userResponse = await axios.post(`${domain}/com.appraisalland.Wishlist/AddToWishlistAsync`, formData,
     {
       headers: {
-        Authorization:`Bearer ${token}`,
+        Authorization: token,
         "Content-Type":"application/json"
       }
     }

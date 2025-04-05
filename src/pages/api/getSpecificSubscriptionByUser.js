@@ -1,16 +1,24 @@
+// pages/api/getSubscription.js
 import axios from "axios";
-import CryptoJS from "crypto-js";
+
 import { getPRODUCTIONUrl } from "../../utils/productionVarFile";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
-  const domain = getPRODUCTIONUrl(); 
-  try {
-    const token = request.headers.authorization;
-    const userId = request.query.userId;
+export default async function handler(req, res) {
+  const domain = getPRODUCTIONUrl();
 
-    const userResponse = await axios.get(
-      `${domain}/com.appraisalland.Payments/getSubcription`,
+  if (req.method !== "GET") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
+  try {
+    const token = req.headers.authorization;
+    const userId = request.query.userId;
+    if (!token || !userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const responseData = await axios.get(
+      `${domain}/com.appraisalland.Payments/GetSubscriptionAsync`,
       {
         headers: {
           Authorization: token,
@@ -22,21 +30,27 @@ async function handler(request, response) {
       }
     );
 
-    const users = userResponse.data;
-
-    return response.status(200).json({ msg: "OK", data: users });
+    return res.status(200).json({
+      success: true,
+      message: "Subscription details fetched successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
-    if (err.response) {
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message);
+    console.error("Get Subscription Error:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      return res.status(err.response.status).json({
+        success: false,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.response.data?.message || "Unknown error"
+            : "Failed to fetch subscription details",
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

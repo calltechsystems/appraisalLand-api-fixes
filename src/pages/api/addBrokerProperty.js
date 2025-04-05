@@ -1,17 +1,24 @@
+// pages/api/addBrokerageproperty.js
 import axios from "axios";
-async function handler(request, response) {
+
+
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
 
   try {
-    const body = request.body;
+    const body = req.body;
 
     if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+      return res.status(400).json({ success: false, message: "Missing request body" });
+    }
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
     const {
-      userId,
-      propertyId,
       streetName,
       streetNumber,
       city,
@@ -37,66 +44,66 @@ async function handler(request, response) {
       applicantAddress,
       attachment,
       image,
-      token,
     } = body;
 
     const formData = {
-      userId: userId,
-      streetName: streetName,
-      streetNumber: streetNumber,
-      city: city,
+      userId: user.userId, // pulled from session
+      streetName,
+      streetNumber,
+      city,
       province: state,
-      zipCode: zipCode,
-      area: area,
-      community: community,
-      typeOfBuilding: typeOfBuilding,
-      applicantFirstName: applicantFirstName,
-      applicantLastName: applicantLastName,
-      applicantEmailAddress: applicantEmailAddress,
-      applicantPhoneNumber: applicantPhoneNumber,
-      bidLowerRange: bidLowerRange,
-      bidUpperRange: bidUpperRange,
-      propertyStatus: propertyStatus,
-      urgency: urgency,
-      estimatedValue: estimatedValue,
-      purpose: purpose,
-      typeOfAppraisal: typeOfAppraisal,
-      lenderInformation: lenderInformation,
-      applicantAddress: applicantAddress,
-      attachment: attachment,
-      image: image,
-      remark : remark,
-      quoteRequiredDate:quoteRequiredDate
+      zipCode,
+      area,
+      community,
+      typeOfBuilding,
+      applicantFirstName,
+      applicantLastName,
+      applicantEmailAddress,
+      applicantPhoneNumber,
+      bidLowerRange,
+      bidUpperRange,
+      propertyStatus,
+      urgency,
+      estimatedValue,
+      purpose,
+      typeOfAppraisal,
+      lenderInformation,
+      applicantAddress,
+      attachment,
+      image,
+      remark,
+      quoteRequiredDate,
     };
-   
-    const userResponse = await axios.post(
-      `${domain}/com.appraisalland.Property/addProperty`,
+
+    const responseData = await axios.post(
+      `${domain}/com.appraisalland.Property/AddPropertyAsync`,
       formData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
           "Content-Type": "application/json",
         },
       }
     );
-    const user = userResponse.data;
 
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-    return response.status(200).json({ msg: "OK", userData: user });
+    return res.status(200).json({
+      success: true,
+      message: "Property submitted successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Add Property Error:", err);
+
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      return response.status(statusCode).json({ error: axiosError.message });
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to submit property";
+
+      return res.status(statusCode).json({ success: false, message: errorMessage });
     } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
   }
 }
-
-export default handler;

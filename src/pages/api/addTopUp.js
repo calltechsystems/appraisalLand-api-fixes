@@ -1,59 +1,64 @@
+// pages/api/AddTopupPlan.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
 
- async function handler (request,response) {
-
-    const decryptionKey = process.env.CRYPTO_SECRET_KEY;
-    const domain = process.env.BACKEND_DOMAIN2;
+export default async function handler(req, res) {
+  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+  const domain = process.env.BACKEND_DOMAIN2;
 
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
+
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
+
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
-    const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
-    
-    if(!body){
-        return response.status(403).json({error:"Not a verified Data"})
+    const decryptedBody = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
+
+    if (!decryptedBody) {
+      return res.status(403).json({ success: false, message: "Invalid encrypted payload" });
     }
 
-    const {TopUpId,UserId,token} = body;
+    const token = req.headers.authorization;
 
+    if (!token || !user.userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
-   const userResponse = await axios.post(`${domain}/com.appraisalland.TopUpPayments/createTopUpPlan`,{} ,
-    {
-      headers: {
-        Authorization:`Bearer ${token}`,
-        "Content-Type":"application/json"
-      },
-      params:{
-        UserId : UserId
+    const responseData = await axios.post(
+      `${domain}/com.appraisalland.TopUpPayments/CreateTopUpPlanAsync`,
+      {},
+      {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+        params: {
+          userId: user.userId,
+        },
       }
-    }
     );
-    const user = userResponse.data;
 
-
-    if(!user){
-        return response.status(404).json({error:"User Not Found"});
-    }
-    return response.status(200).json({msg:"OK",userData : user});
+    return res.status(200).json({
+      success: true,
+      message: "Top-up plan created successfully",
+      data: responseData.data,
+    });
   } catch (err) {
-    
-    console.log(err);
-    if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
-      const statusCode = err.response.status;
-      console.error(statusCode,axiosError.message); // Log the error for debugging
+    console.error("Top-up Plan Error:", err);
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+    if (err.response) {
+      const statusCode = err.response.status;
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to create top-up plan";
+
+      return res.status(statusCode).json({ success: false, message: errorMessage });
     }
 
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }
- 
-export default handler;
-

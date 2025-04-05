@@ -1,18 +1,26 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
+export default async function handler(request, response) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
 
+  if (request.method !== "PUT") {
+    return response.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = request.body?.data;
+
+    if (!encryptedBody) {
+      return response.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    if (!body || !body.id || !body.token) {
+      return response.status(400).json({ success: false, message: "Missing required fields" });
     }
 
     const {
@@ -46,74 +54,68 @@ async function handler(request, response) {
       emailNotification
     } = body;
 
-    const formData = {
-      firstName: firstName,
-      middleName: middleName,
-      lastName: lastName,
-      companyName: companyName,
-      emailId: emailId,
-      assistantTwoPhoneNumber: assistantTwoPhoneNumber,
-      assistantTwoEmailAddress: assistantTwoEmailAddress,
+    const payload = {
+      firstName,
+      middleName,
+      lastName,
+      companyName,
+      emailId,
+      assistantTwoPhoneNumber,
+      assistantTwoEmailAddress,
       licenseNo: "",
       brokerageName: "",
-      streetName: streetName,
-      streetNumber: streetNumber,
-      city: city,
+      streetName,
+      streetNumber,
+      city,
       province: state,
-      apartmentNo: apartmentNo,
-      postalCode: postalCode,
+      apartmentNo,
+      postalCode,
       area: "",
-      phoneNumber: phoneNumber,
-      cellNumber: cellNumber,
+      phoneNumber,
+      cellNumber,
       faxNumber: "",
       description: "",
-      assistantEmailAddress: assistantEmailAddress,
-      assistantFirstName: assistantFirstName,
-      assistantLastName: assistantLastName,
-      assistantPhoneNumber: assistantPhoneNumber,
-      assistantTwoFirstName: assistantTwoFirstName,
-      assistantTwoLastName: assistantTwoLastName,
+      assistantEmailAddress,
+      assistantFirstName,
+      assistantLastName,
+      assistantPhoneNumber,
+      assistantTwoFirstName,
+      assistantTwoLastName,
       mortageBrokerageLicNo: mortgageBrokerageLicNo,
-      mortageBrokerLicNo: mortageBrokerLicNo,
-      profileImage: profileImage,
-      getSms : smsNotification ? 1 : 0,
-      getEmail : emailNotification ? 1 : 0
+      mortageBrokerLicNo,
+      profileImage,
+      getSms: smsNotification ? 1 : 0,
+      getEmail: emailNotification ? 1 : 0
     };
-    const userResponse = await axios.put(
-      `${domain}/com.appraisalland.Broker/updateBrokerProfile`,
-      formData,
+
+    const apiResponse = await axios.put(
+      `${domain}/com.appraisalland.Broker/UpdateBrokerProfileAsync`,
+      payload,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
           "Content-Type": "application/json",
         },
-        params: {
-          BrokerId: id,
-        },
+        params: { brokerId: id }
       }
     );
-    const user = userResponse.data;
 
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-    return response
-      .status(200)
-      .json({ msg: "Successfully updated", userData: user });
+    return response.status(200).json({
+      success: true,
+      message: "Broker profile updated successfully",
+      data: apiResponse.data
+    });
   } catch (err) {
-    // console.log(err);
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Update failed"
+          : "Unable to update broker profile";
 
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return response.status(statusCode).json({ success: false, message: errorMessage });
     }
+
+    return response.status(500).json({ success: false, message: "Internal Server Error" });
   }
 }
-
-export default handler;

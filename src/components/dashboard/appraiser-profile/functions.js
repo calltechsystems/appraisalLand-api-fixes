@@ -19,7 +19,6 @@ const REGION = AWS_Cred.Region;
 const myBucket = new AWS.S3({ params: { Bucket: S3_BUCKET }, region: REGION });
 
 export async function uploadFile(file) {
-  console.log("AWS_Cred", AWS_Cred, file);
 
   const params = {
     ACL: "public-read",
@@ -35,11 +34,10 @@ export async function uploadFile(file) {
     const S3_URL = `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${encodeURIComponent(
       file.name
     )}`;
-    console.log("S3_URL", S3_URL);
     return S3_URL;
   } catch (error) {
     console.log("errorr", error);
     toast.error("Error while uploading!!");
-    throw error; // Rethrow the error to handle it at a higher level if necessary
+    throw error; 
   }
 }

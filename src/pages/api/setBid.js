@@ -1,58 +1,73 @@
+// pages/api/setQuote.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-async function handler(request, response) {
-  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+export default async function handler(req, res) {
   const domain = process.env.BACKEND_DOMAIN;
+  const decryptionKey = process.env.CRYPTO_SECRET_KEY;
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
 
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
+
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
+    }
 
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
     const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    const { userId, orderId, bidAmount, description, token } = body || {};
+
+    if (!userId || !orderId || !bidAmount || !token) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    const { userId, orderId, bidAmount, description, token } = body;
-
-    const formData = {
+    const payload = {
       appraiserId: userId,
-      orderId: orderId,
-      description: description,
-      bidAmount: bidAmount,
+      orderId,
+      description,
+      bidAmount,
     };
 
     const userResponse = await axios.post(
-      `${domain}/com.appraisalland.Bid/setQuotes`,
-      formData,
+      `${domain}/com.appraisalland.Bid/SetQuotesAsync`,
+      payload,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
           "Content-Type": "application/json",
         },
       }
     );
-    const user = userResponse.data;
 
-    if (!user) {
-      return response.status(404).json({ error: "User Not Found" });
-    }
-
-    return response.status(200).json({ msg: "OK", userData: user });
+    return res.status(200).json({
+      success: true,
+      message: "Quote submitted successfully",
+      data: userResponse.data,
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Set Quote Error:", err);
+
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      return response.status(statusCode).json({ error: axiosError.message });
-    } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to submit quote";
+
+      return res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 }
-
-export default handler;

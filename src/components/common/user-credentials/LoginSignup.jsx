@@ -1,4 +1,4 @@
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -8,21 +8,20 @@ import axios from "axios";
 import { encryptionData } from "../../../utils/dataEncryption";
 
 const LoginSignup = () => {
-
   // Registration Show Hide Functionality start
 
   const [showhide, setShowhide] = useState("");
-  const [showRegister,setRegister]=useState(true);
-  const [captchaVerfied ,setCaptchaVerified] = useState(false);
+  const [showRegister, setRegister] = useState(true);
+  const [captchaVerfied, setCaptchaVerified] = useState(false);
 
-  const [passwordLoginVerified,setPasswordLoginVerified] = useState(true)
-  const [passwordRegisterVerified,setPasswordRegisterVerified] = useState(true)
+  const [passwordLoginVerified, setPasswordLoginVerified] = useState(true);
+  const [passwordRegisterVerified, setPasswordRegisterVerified] =
+    useState(true);
 
   const [passwordVisible, setPasswordVisible] = useState(false); // State variable to toggle password visibility
-  const [passwordLogin, setPasswordLogin] = useState(''); // State variable to store the password value
-  const [passwordRegister, setPasswordRegister] = useState(''); // State variable to store the password value
-  const [passwordReRegister, setPasswordReRegister] = useState(''); // State variable to store the password value
-
+  const [passwordLogin, setPasswordLogin] = useState(""); // State variable to store the password value
+  const [passwordRegister, setPasswordRegister] = useState(""); // State variable to store the password value
+  const [passwordReRegister, setPasswordReRegister] = useState(""); // State variable to store the password value
 
   //defining the variables
   const emailLoginRef = useRef();
@@ -32,7 +31,7 @@ const LoginSignup = () => {
 
   const checkValueRef = useRef();
 
-  const [isLoading , setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -44,115 +43,109 @@ const LoginSignup = () => {
 
   // Toggle password visibility hnadler
   const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible); 
+    setPasswordVisible(!passwordVisible);
   };
 
-
-
   //login trigger function
-  const loginHandler = (event) =>{
-
+  const loginHandler = (event) => {
     event.preventDefault();
     const email = emailLoginRef.current.value;
     const password = passwordLogin;
 
-    if(!email  || !password ){
+    if (!email || !password) {
       alert("Credentials Can't be empty");
-    }
-    else if(!captchaVerfied){
+    } else if (!captchaVerfied) {
       alert("captcha isnt verified");
     }
 
     const data = {
-      email :email,
-      password:password
+      email: email,
+      password: password,
     };
 
     const encryptedData = encryptionData(data);
 
     setLoading(true);
-    axios.post("/api/login",encryptedData)
-    .then(res=>{
-    toast.dismiss();
-    const { success, message } = res.data?.response;
-    if (success) {
-      toast.success(message);
-      localStorage.setItem("user",JSON.stringify(res));
-      router.push("/my-profile");
-    } else {
-      toast.error(message);
+    axios
+      .post("/api/login", encryptedData)
+      .then((res) => {
+        toast.dismiss();
+        const { success, message } = res.data?.response;
+        if (success) {
+          toast.success(message);
+          localStorage.setItem("user", JSON.stringify(res));
+          router.push("/my-profile");
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((err) => {
+        alert(err?.response?.message || "Internal Server Error");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const registerHandler = (event) => {
+    event.preventDefault();
+
+    setRegister(false);
+
+    const email = emailRegisterRef.current.value;
+    const password = passwordRegister;
+    const reEnterPassword = passwordReRegister;
+    const user = userTypeRef.current.value;
+
+    if (password !== reEnterPassword) {
+      alert("Password are meant to be same ");
+    } else if (!email) {
+      alert("Email cant be empty or non valid.");
+    } else if (!captchaVerfied) {
+      alert("captcha isnt verified");
     }
-  })
-    .catch(err=>{
-      alert(err.message);
-    })
-    .finally(()=>{
-      setLoading(false);
-    })
-  }
+    const data = {
+      email: email,
+      password: password,
+      AccountType: user,
+    };
 
-  const registerHandler = (event)=>{
+    const encryptedData = encryptionData(data);
 
-          event.preventDefault();
-          
-          setRegister(false);
-        
-          const email = emailRegisterRef.current.value;
-          const password = passwordRegister;
-          const reEnterPassword = passwordReRegister;
-          const user = userTypeRef.current.value;
-          
-          if(password!==reEnterPassword){
-            alert("Password are meant to be same ");
-          }
-          else if(!email){
-            alert("Email cant be empty or non valid.");
-          }
-          else if(!captchaVerfied){
-            alert("captcha isnt verified");
-          }
-          const data = {
-            email :email,
-            password:password,
-            AccountType :user
-          };
-          
-          const encryptedData = encryptionData(data);
+    setLoading(true);
+    axios
+      .post("/api/register", encryptedData)
+      .then((res) => {
+        alert("Successfully Signed In!");
+        //redirection to login
+      })
+      .catch((err) => {
+        alert(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-          setLoading(true);
-          axios.post("/api/register",encryptedData)
-          .then(res=>{
-            alert("Successfully Signed In!");
-            //redirection to login
-          })
-          .catch(err=>{
-           alert(err.message);
-          })
-          .finally(()=>{
-            setLoading(false);
-          })
-  }
-
-  const checkPasswordLoginHandler = (event,chnage)=>{
+  const checkPasswordLoginHandler = (event, chnage) => {
     setPasswordLogin(event.target.value);
-const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-if (passwordRegex.test(event.target.value)) {
-  setPasswordLoginVerified(true);
-} else {
-  setPasswordLoginVerified(false); // Change this to false for invalid passwords
-}
-  }
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    if (passwordRegex.test(event.target.value)) {
+      setPasswordLoginVerified(true);
+    } else {
+      setPasswordLoginVerified(false); // Change this to false for invalid passwords
+    }
+  };
 
-  const checkPasswordRegisterHandler = (event)=>{
+  const checkPasswordRegisterHandler = (event) => {
     setPasswordRegister(event.target.value);
-    const passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$";
-    if(passwordRegex.test(event.target.value)){
+    const passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*d)(?=.*[W_]).{8,}$";
+    if (passwordRegex.test(event.target.value)) {
+      setPasswordRegisterVerified(true);
+    } else {
       setPasswordRegisterVerified(true);
     }
-    else{
-      setPasswordRegisterVerified(true);
-    }
-  }
+  };
 
   // Registration Show Hide Functionality end
 
@@ -170,7 +163,7 @@ if (passwordRegex.test(event.target.value)) {
 
       <div className="modal-body container pb20">
         <div className="row">
-          <div className={ showRegister ? "col-lg-12" : "col-lg-24"}>
+          <div className={showRegister ? "col-lg-12" : "col-lg-24"}>
             <ul className="sign_up_tab nav nav-tabs" id="myTab" role="tablist">
               <li className="nav-item">
                 <Link
@@ -187,20 +180,21 @@ if (passwordRegex.test(event.target.value)) {
               </li>
               {/* End login tab */}
 
-              { showRegister && ( <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  id="profile-tab"
-                  data-bs-toggle="tab"
-                  href="#profile"
-                  role="tab"
-                  aria-controls="profile"
-                  aria-selected="false"
-                >
-                  Register
-                </Link>
-              </li>)
-              }
+              {showRegister && (
+                <li className="nav-item">
+                  <Link
+                    className="nav-link"
+                    id="profile-tab"
+                    data-bs-toggle="tab"
+                    href="#profile"
+                    role="tab"
+                    aria-controls="profile"
+                    aria-selected="false"
+                  >
+                    Register
+                  </Link>
+                </li>
+              )}
               {/* End Register tab */}
             </ul>
             {/* End .sign_up_tab */}
@@ -230,7 +224,7 @@ if (passwordRegex.test(event.target.value)) {
 
             <div className="col-lg-6 col-xl-6">
               <div className="login_form">
-                <form  onSubmit={(e)=>loginHandler(e)}>
+                <form onSubmit={(e) => loginHandler(e)}>
                   <div className="heading">
                     <h4>Login</h4>
                   </div>
@@ -254,26 +248,35 @@ if (passwordRegex.test(event.target.value)) {
                   {/* End input-group */}
 
                   <div className="input-group form-group">
-                  <input
-                    type={passwordVisible ? 'text' : 'password'} // Conditionally set the input type
-                    className="form-control"
-                    id="exampleInputPassword1"
-                    placeholder="Password"
-                    required
-                    value={passwordLogin}
-                    onChange={(e)=>checkPasswordLoginHandler(e)}
-                    style={{ paddingRight: '40px' }} // Add right padding to accommodate the button
-                  />
+                    <input
+                      type={passwordVisible ? "text" : "password"} // Conditionally set the input type
+                      className="form-control"
+                      id="exampleInputPassword1"
+                      placeholder="Password"
+                      required
+                      value={passwordLogin}
+                      onChange={(e) => checkPasswordLoginHandler(e)}
+                      style={{ paddingRight: "40px" }} // Add right padding to accommodate the button
+                    />
                     <div className="input-group-prepend">
-                      <div className="input-group-text" onClick={togglePasswordVisibility}>
+                      <div
+                        className="input-group-text"
+                        onClick={togglePasswordVisibility}
+                      >
                         <i className="flaticon-password"></i>
                       </div>
                     </div>
                   </div>
-                  <div>{!passwordLoginVerified ?  <div>Password not strong</div>:""}</div>
+                  <div>
+                    {!passwordLoginVerified ? (
+                      <div>Password not strong</div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {/* End input-group */}
 
-                 {/* <Captcha  verified = {setCaptchaVerified}/>*/} 
+                  {/* <Captcha  verified = {setCaptchaVerified}/>*/}
 
                   <div className="form-group form-check custom-checkbox mb-3">
                     <input
@@ -315,171 +318,187 @@ if (passwordRegex.test(event.target.value)) {
                     </Link>
                   </p>
                 </form>
-              </div>6
-              {/* End .col .login_form */}
+              </div>
+              6{/* End .col .login_form */}
             </div>
           </div>
           {/* End .tab-pane */}
 
-          { showRegister && (<div
-            className="row mt25 tab-pane fade"
-            id="profile"
-            role="tabpanel"
-            aria-labelledby="profile-tab"
-          >
-            <div className="col-lg-6 col-xl-6">
-              <div className="regstr_thumb">
-                <Image
-                  width={357}
-                  height={659}
-                  className="img-fluid w100 h-100 cover"
-                  src="/assets/images/home/mobile-login-concept-illustration_114360-83.avif"
-                  alt="regstr.jpg"
-                />
-              </div>
-            </div>
-            {/* End . left side image for register */}
-
-           <div className="col-lg-6 col-xl-6">
-              <div className="sign_up_form">
-                <div className="heading">
-                  <h4>Register</h4>
+          {showRegister && (
+            <div
+              className="row mt25 tab-pane fade"
+              id="profile"
+              role="tabpanel"
+              aria-labelledby="profile-tab"
+            >
+              <div className="col-lg-6 col-xl-6">
+                <div className="regstr_thumb">
+                  <Image
+                    width={357}
+                    height={659}
+                    className="img-fluid w100 h-100 cover"
+                    src="/assets/images/home/mobile-login-concept-illustration_114360-83.avif"
+                    alt="regstr.jpg"
+                  />
                 </div>
-                {/* End .heading */}
+              </div>
+              {/* End . left side image for register */}
 
-                <form onSubmit={(e)=>registerHandler(e)}>
-                  <div className="form-group ui_kit_select_search mb-3">
-                    <select
-                      className="form-select"
-                      data-live-search="true"
-                      data-width="100%"
-                      onChange={(e) => handleshowhide(e)}
-                      ref={userTypeRef}
-                      // disabled={!userinput}
-                    >
-                      <option data-tokens="SelectRole">Choose User</option>
-                      <option data-tokens="Agent/Agency" value="1">
-                        Mortgage Broker
-                      </option>
-                      <option data-tokens="SingleUser" value="2">
-                        Mortgage Brokerage
-                      </option>
-                      <option data-tokens="SingleUser" value="3">
-                        Appraiser
-                      </option>
-                      <option data-tokens="SingleUser" value="4">
-                        Appraiser Company
-                      </option>
-                    </select>
+              <div className="col-lg-6 col-xl-6">
+                <div className="sign_up_form">
+                  <div className="heading">
+                    <h4>Register</h4>
                   </div>
-                  {/* End from-group */}
+                  {/* End .heading */}
 
-                  {showhide === "1" && (
-                    <>
-                      <div className="form-group input-group  mb-3">
-                        <input
-                          ref={emailRegisterRef}
-                          type="email"
-                          name="email"
-                          className="form-control"
-                          id="exampleInputEmail2"
-                          placeholder="Email Address"
-                          required
-                        />
-                        <div className="input-group-prepend">
-                          <div className="input-group-text">
-                            <i className="fa fa-envelope-o"></i>
+                  <form onSubmit={(e) => registerHandler(e)}>
+                    <div className="form-group ui_kit_select_search mb-3">
+                      <select
+                        className="form-select"
+                        data-live-search="true"
+                        data-width="100%"
+                        onChange={(e) => handleshowhide(e)}
+                        ref={userTypeRef}
+                        // disabled={!userinput}
+                      >
+                        <option data-tokens="SelectRole">Choose User</option>
+                        <option data-tokens="Agent/Agency" value="1">
+                          Mortgage Broker
+                        </option>
+                        <option data-tokens="SingleUser" value="2">
+                          Mortgage Brokerage
+                        </option>
+                        <option data-tokens="SingleUser" value="3">
+                          Appraiser
+                        </option>
+                        <option data-tokens="SingleUser" value="4">
+                          Appraiser Company
+                        </option>
+                      </select>
+                    </div>
+                    {/* End from-group */}
+
+                    {showhide === "1" && (
+                      <>
+                        <div className="form-group input-group  mb-3">
+                          <input
+                            ref={emailRegisterRef}
+                            type="email"
+                            name="email"
+                            className="form-control"
+                            id="exampleInputEmail2"
+                            placeholder="Email Address"
+                            required
+                          />
+                          <div className="input-group-prepend">
+                            <div className="input-group-text">
+                              <i className="fa fa-envelope-o"></i>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {/* End .row */}
+                        {/* End .row */}
 
-                      <div className="input-group form-group">
-                      <input
-                        type={passwordVisible ? 'text' : 'password'} // Conditionally set the input type
-                        className="form-control"
-                        id="exampleInputPassword1"
-                        placeholder="Password"
-                        required
-                        value={passwordRegister}
-                        onChange={(e) => checkPasswordRegisterHandler(e)}
-                        style={{ paddingRight: '40px' }} // Add right padding to accommodate the button
-                      />
-                        <div className="input-group-prepend">
-                          <div className="input-group-text" onClick={togglePasswordVisibility}>
-                            <i className="flaticon-password"></i>
-                          </div>
-                      </div>
-                  </div>
-                  <div>{!passwordLoginVerified ?  <div>Password not strong</div>:""}</div>
-                      {/* End .row */}
-
-                      <div className="input-group form-group">
-                        <input
-                          type={passwordVisible ? 'text' : 'password'} // Conditionally set the input type
-                          className="form-control"
-                          id="exampleInputPassword1"
-                          placeholder="Password"
-                          required
-                          value={passwordReRegister}
-                          onChange={(e,setPasswordReRegister) => checkPasswordHandler(e,setPasswordReRegister)}
-                          style={{ paddingRight: '40px' }} // Add right padding to accommodate the button
-                        />
+                        <div className="input-group form-group">
+                          <input
+                            type={passwordVisible ? "text" : "password"} // Conditionally set the input type
+                            className="form-control"
+                            id="exampleInputPassword1"
+                            placeholder="Password"
+                            required
+                            value={passwordRegister}
+                            onChange={(e) => checkPasswordRegisterHandler(e)}
+                            style={{ paddingRight: "40px" }} // Add right padding to accommodate the button
+                          />
                           <div className="input-group-prepend">
-                            <div className="input-group-text" onClick={togglePasswordVisibility}>
+                            <div
+                              className="input-group-text"
+                              onClick={togglePasswordVisibility}
+                            >
                               <i className="flaticon-password"></i>
                             </div>
+                          </div>
                         </div>
-                  </div>
-                      {/* End .row */}
+                        <div>
+                          {!passwordLoginVerified ? (
+                            <div>Password not strong</div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                        {/* End .row */}
 
-                      {/*<  Captcha verified = {setCaptchaVerified} />*/}
-                    </>
-                  )}
+                        <div className="input-group form-group">
+                          <input
+                            type={passwordVisible ? "text" : "password"} // Conditionally set the input type
+                            className="form-control"
+                            id="exampleInputPassword1"
+                            placeholder="Password"
+                            required
+                            value={passwordReRegister}
+                            onChange={(e, setPasswordReRegister) =>
+                              checkPasswordHandler(e, setPasswordReRegister)
+                            }
+                            style={{ paddingRight: "40px" }} // Add right padding to accommodate the button
+                          />
+                          <div className="input-group-prepend">
+                            <div
+                              className="input-group-text"
+                              onClick={togglePasswordVisibility}
+                            >
+                              <i className="flaticon-password"></i>
+                            </div>
+                          </div>
+                        </div>
+                        {/* End .row */}
 
-                  <div className="form-group form-check custom-checkbox mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="terms"
-                      required
-                      ref={checkValueRef}
-                    />
-                    <label className="form-check-label" htmlFor="terms">
-                      I accept the Terms and Privacy Policy.
-                    </label>
-                    <Link
-                      href="assets/images/Terms & Conditions.pdf"
-                      target="_blank"
-                      className="form-check-label text-danger"
+                        {/*<  Captcha verified = {setCaptchaVerified} />*/}
+                      </>
+                    )}
+
+                    <div className="form-group form-check custom-checkbox mb-3">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="terms"
+                        required
+                        ref={checkValueRef}
+                      />
+                      <label className="form-check-label" htmlFor="terms">
+                        I accept the Terms and Privacy Policy.
+                      </label>
+                      <Link
+                        href="assets/images/Terms & Conditions.pdf"
+                        target="_blank"
+                        className="form-check-label text-danger"
+                      >
+                        Terms&Cond.
+                      </Link>
+                    </div>
+                    {/* End from-group */}
+
+                    <button
+                      type="submit"
+                      className="btn btn-log w-100 btn-thm"
+                      id="signup"
                     >
-                      Terms&Cond.
-                    </Link>
-                  </div>
-                  {/* End from-group */}
+                      Sign Up
+                    </button>
+                    {/* End btn */}
 
-                  <button
-                   type = "submit"
-                    className="btn btn-log w-100 btn-thm"
-                    id="signup"
-                  >
-                    Sign Up
-                  </button>
-                  {/* End btn */}
-
-                  <p className="text-center">
-                    Already have an account?{" "}
-                    <Link className="text-thm fw-bold" href="#">
-                      Log In
-                    </Link>
-                  </p>
-                </form>
-                {/* End .form */}
+                    <p className="text-center">
+                      Already have an account?{" "}
+                      <Link className="text-thm fw-bold" href="#">
+                        Log In
+                      </Link>
+                    </p>
+                  </form>
+                  {/* End .form */}
+                </div>
               </div>
+              {/* End register content */}
             </div>
-            {/* End register content */}
-          </div>)}
+          )}
           {/* End .tab-pane */}
         </div>
       </div>
@@ -492,7 +511,7 @@ export async function getStaticProps(context) {
 
   return {
     props: {
-      preview: isPreview
+      preview: isPreview,
     },
   };
 }
@@ -503,10 +522,9 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      decryptionKey
+      decryptionKey,
     },
   };
 }
-
 
 export default LoginSignup;

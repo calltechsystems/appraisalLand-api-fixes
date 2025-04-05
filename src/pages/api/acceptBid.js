@@ -1,53 +1,64 @@
+// pages/api/acceptBid.js
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-export default async function handler(request, response) {
+
+export default async function handler(req, res) {
   const decryptionKey = process.env.CRYPTO_SECRET_KEY;
   const domain = process.env.BACKEND_DOMAIN;
+
   try {
-    const encryptedBody = await request.body.data;
+    const encryptedBody = req.body.data;
 
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
-    const body = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
-
-    if (!body) {
-      return response.status(403).json({ error: "Not a verified Data" });
+    if (!encryptedBody) {
+      return res.status(400).json({ success: false, message: "Missing encrypted data" });
     }
 
-    const { bidId } = body;
+    const decryptedBytes = CryptoJS.AES.decrypt(encryptedBody, decryptionKey);
+    const decryptedBody = JSON.parse(decryptedBytes.toString(CryptoJS.enc.Utf8));
 
-    const token = request.headers.authorization;
+    if (!decryptedBody) {
+      return res.status(403).json({ success: false, message: "Invalid encrypted payload" });
+    }
 
-    
-    
+    const { bidId } = decryptedBody;
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
     const userResponse = await axios.put(
-      `${domain}/com.appraisalland.Broker/quoteActionByBroker`,
+      `${domain}/com.appraisalland.Broker/QuoteActionByBrokerAsync`,
       {},
       {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
         },
-        params:{
-          QuoteID:bidId
-        }
+        params: {
+          quoteId: bidId,
+        },
       }
     );
-    const user = userResponse.data;
 
-    return response.status(201).json({ msg: "Successfully Created !!" });
+    return res.status(200).json({
+      success: true,
+      message: "Bid accepted successfully",
+      data: userResponse.data, // send full response or a specific part if needed
+    });
   } catch (err) {
     if (err.response) {
-      // If the error is from an axios request (e.g., HTTP 4xx or 5xx error)
-      console.log(err);
-      const axiosError = err.response.data;
       const statusCode = err.response.status;
-      console.error(statusCode, axiosError.message); // Log the error for debugging
+      const errorMessage =
+        process.env.NODE_ENV === "development"
+          ? err.response.data?.message || "Unknown error"
+          : "Failed to accept bid";
 
-      return response.status(statusCode).json({ error: axiosError.message });
+      return res.status(statusCode).json({ success: false, message: errorMessage });
     } else {
-      // Handle other types of errors
-      return response.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
   }
 }
